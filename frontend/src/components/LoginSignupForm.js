@@ -23,7 +23,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     const handleLogin = async (e) => {
       e.preventDefault();
       try {
-        const res = await axios.post('http://localhost:5000/api/auth/login', { ustId, password }); // adjust port if needed
+        const res = await axios.post('https://eventmanager-abvk.onrender.com/api/auth/login', { ustId, password }); // adjust port if needed
         const token = res.data.token;
         setMessage("Login successful!");
         localStorage.setItem('token', token); // Store token for future authenticated requests
@@ -35,7 +35,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-          const res = await axios.post('http://localhost:5000/api/auth/register', {
+          const res = await axios.post('https://eventmanager-abvk.onrender.com/api/auth/register', {
             ustId,
             userName,
             password,
