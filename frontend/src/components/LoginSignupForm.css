@@ -11,6 +11,7 @@ input {
   font-family: "Poppins", sans-serif;
 }
 
+
 .container {
   position: relative;
   width: 100%;
@@ -58,10 +59,12 @@ form.sign-up-form {
 
 form.sign-in-form {
   z-index: 2;
+  
 }
 
 .title {
-  font-size: 2.2rem;
+  font-size: 3.2rem;
+  text-transform:none ;
   color: #444;
   margin-bottom: 10px;
 }
@@ -78,13 +81,32 @@ form.sign-in-form {
   padding: 0 0.4rem;
   position: relative;
 }
+.input-fields {
+  max-width: 380px;
+  width: 100%;
+  background-color: #f0f0f0;
+  margin: 10px 0;
+  height: 42px;
+  border-radius: 55px;
+  display: grid;
+  grid-template-columns: 15% 85%;
+  padding: 0 0.4rem;
+  position: relative;
+}
 
 .input-field i {
   text-align: center;
   line-height: 55px;
   color: #acacac;
   transition: 0.5s;
-  font-size: 1.1rem;
+  font-size: 2.1rem;
+}
+.input-fields i {
+  text-align: center;
+  line-height: 55px;
+  color: #acacac;
+  transition: 0.5s;
+  font-size: 1.7rem;
 }
 
 .input-field input {
@@ -93,7 +115,16 @@ form.sign-in-form {
   border: none;
   line-height: 1;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 2.1rem;
+  color: #333;
+}
+.input-fields input {
+  background: none;
+  outline: none;
+  border: none;
+  line-height: 1;
+  font-weight: 600;
+  font-size:1.7rem;
   color: #333;
 }
 
@@ -101,10 +132,27 @@ form.sign-in-form {
   color: #aaa;
   font-weight: 500;
 }
+.input-fields input::placeholder {
+  color: #aaa;
+  font-weight: 500;
+}
+
+.logos {
+  font-size: 3.5rem;
+  font-weight: bolder;
+  color: var(--black);
+  margin-bottom: 60px;
+  padding-right: 35px;
+}
+
+
+.logos i {
+  color: var(--orange);
+}
 
 .social-text {
   padding: 0.7rem 0;
-  font-size: 1rem;
+  font-size: 2rem;
 }
 
 .social-media {
@@ -123,18 +171,18 @@ form.sign-in-form {
   border-radius: 50%;
   border: 1px solid #333;
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: 2.1rem;
   transition: 0.3s;
 }
 
 .social-icon:hover {
-  color: #4481eb;
-  border-color: #4481eb;
+  color: #ff7800;
+  border-color: #ff7800;
 }
 
-.btn {
+.butn {
   width: 150px;
-  background-color: #5995fd;
+  background-color:#ff7800;
   border: none;
   outline: none;
   height: 49px;
@@ -147,7 +195,7 @@ form.sign-in-form {
   transition: 0.5s;
 }
 
-.btn:hover {
+.butn:hover {
   background-color: #4d84e2;
 }
 .panels-container {
@@ -168,7 +216,7 @@ form.sign-in-form {
   top: -10%;
   right: 48%;
   transform: translateY(-50%);
-  background-image: linear-gradient(-45deg, #4481eb 0%, #04befe 100%);
+  background-image: linear-gradient(-45deg, #ff7800 0%, #f3923d 100%);
   transition: 1.8s ease-in-out;
   border-radius: 50%;
   z-index: 6;
@@ -216,7 +264,7 @@ form.sign-in-form {
   padding: 0.7rem 0;
 }
 
-.btn.transparent {
+.butn.transparent {
   margin: 0;
   background: none;
   border: 2px solid #fff;
@@ -247,8 +295,29 @@ form.sign-in-form {
     -moz-appearance: none;
     cursor: pointer;
   }
+  .input-fields select.styled-select {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    width: 100%;
+    height: 100%;
+    padding-left: 10px;
+    border-radius: 55px;
+    background-color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+  }
   
   .input-field select.styled-select option {
+    color: #333;
+    font-weight: 500;
+  }
+  .input-fields select.styled-select option {
     color: #333;
     font-weight: 500;
   }
@@ -342,18 +411,18 @@ form.sign-in-form {
   }
 
   .panel h3 {
-    font-size: 1.2rem;
+    font-size: 2.2rem;
   }
 
   .panel p {
-    font-size: 0.7rem;
+    font-size: 1.3rem;
     padding: 0.5rem 0;
   }
 
-  .btn.transparent {
+  .butn.transparent {
     width: 110px;
     height: 35px;
-    font-size: 0.7rem;
+    font-size: 1.5rem;
   }
 
   .container:before {

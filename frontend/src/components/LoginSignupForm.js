@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './LoginSignupForm.css';
+import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
@@ -15,6 +16,16 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     const [gender, setGender] = useState('');
     const [gmail, setGmail] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
+    const navigate = useNavigate();
+    useEffect(() => {
+      // Add 'login-page' class to the body tag
+      document.body.classList.add('login-page');
+  
+      // Clean up the class when the component unmounts (important if using React Router)
+      return () => {
+        document.body.classList.remove('login-page');
+      };
+    }, []);
   
     const toggleForm = () => {
       setIsSignUp(!isSignUp);
@@ -23,11 +34,11 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     const handleLogin = async (e) => {
       e.preventDefault();
       try {
-        const res = await axios.post('https://eventmanager-abvk.onrender.com/api/auth/login', { ustId, password }); // adjust port if needed
+        const res = await axios.post('http://localhost:5000/api/auth/login', { ustId, password }); // adjust port if needed
         const token = res.data.token;
         setMessage("Login successful!");
         localStorage.setItem('token', token); // Store token for future authenticated requests
-        // Optional: Navigate to dashboard or home
+        navigate('/home');;
       } catch (err) {
         setMessage(err.response?.data?.message || "Something went wrong");
       }
@@ -35,7 +46,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-          const res = await axios.post('https://eventmanager-abvk.onrender.com/api/auth/register', {
+          const res = await axios.post('http://localhost:5000/api/auth/register', {
             ustId,
             userName,
             password,
@@ -57,6 +68,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
         <div className="signin-signup">
           {!isSignUp ? (
             <form className="sign-in-form" onSubmit={handleLogin}>
+                <a href="#" className="logos">
+  <i className="fas fa-cocktail"></i> EventLoop
+</a>
               <h2 className="title">Sign in</h2>
               {message && <p style={{ color: 'red' }}>{message}</p>}
               <div className="input-field">
@@ -79,7 +93,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
                   required
                 />
               </div>
-              <input type="submit" value="Login" className="btn solid" />
+              <input type="submit" value="Login" className="butn solid" />
               <p className="social-text">Or Sign in with social platforms</p>
               <div className="social-media">
                 <a href="" className="social-icon">
@@ -99,7 +113,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
           ) : (
             <form className="sign-up-form"  onSubmit={handleRegister}>
               <h2 className="title">Sign up</h2>
-              <div className="input-field">
+              <div className="input-fields">
                 <i className="fas fa-user"></i>
                 <input
       type="text"
@@ -109,17 +123,17 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
       required
     />
               </div>
-              <div className="input-field">
+              <div className="input-fields">
                 <i className="fas fa-user"></i>
                 <input
       type="text"
       placeholder="User Name"
-      value={ustId}
+      value={userName}
       onChange={(e) => setUserName(e.target.value)}
       required
     />
               </div>
-              <div className="input-field">
+              <div className="input-fields">
                 <i className="fas fa-envelope"></i>
                 <input
       type="email"
@@ -129,7 +143,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
       required
     />
               </div>
-              <div className="input-field">
+              <div className="input-fields">
                 <i className="fas fa-lock"></i>
                 <input
       type="password"
@@ -139,7 +153,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
       required
     />
               </div>
-              <div className="input-field">
+              <div className="input-fields">
                 <i className="fas fa-lock"></i>
                 <input
       type="password"
@@ -149,7 +163,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
       required
     />
               </div>
-              <div className="input-field">
+              <div className="input-fields">
   <i className="fas fa-venus-mars"></i>
   <select
     value={gender}
@@ -166,7 +180,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     <option value="Prefer not to say">Prefer not to say</option>
   </select>
 </div>
-              <div className="input-field">
+              <div className="input-fields">
                 <i className="	fas fa-calendar-alt"></i>
                 <input
       type="date"
@@ -176,7 +190,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
       required
     />
               </div>
-              <input type="submit" className="btn" value="Register" />
+              <input type="submit" className="butn" value="Register" />
               <p className="social-text">Or Sign up with social platforms</p>
               <div className="social-media">
                 <a href="#" className="social-icon">
@@ -202,7 +216,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
           <div className="content">
             <h3>New here?</h3>
             <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-            <button className="btn transparent" onClick={toggleForm}>
+            <button className="butn transparent" onClick={toggleForm}>
               Sign up
             </button>
           </div>
@@ -212,14 +226,17 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
           <div className="content">
             <h3>One of us?</h3>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-            <button className="btn transparent" onClick={toggleForm}>
+            <button className="butn transparent" onClick={toggleForm}>
               Sign in
             </button>
           </div>
           <img src="register.svg" className="image" alt="" />
         </div>
       </div>
+    
     </div>
+    
+    
   );
 };
 

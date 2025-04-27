@@ -1,0 +1,61 @@
+.event-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .event-header {
+    text-align: center;
+  }
+  .event-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
+  .event-header p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+  }
+  .attendees, .menu-selection {
+    margin-bottom: 20px;
+  }
+  .attendee-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .attendee-item {
+    width: 45%;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .attendee-item button {
+    padding: 10px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .attendee-item button:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+  }
+  .menu-selection select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  .total-price {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    margin-top: 20px;
+  }
+  

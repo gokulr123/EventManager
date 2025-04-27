@@ -1,10 +1,20 @@
 import React from 'react';
+import Header from "../components/Header/Header";
+import HomeComponent from '../components/Home/HomeComponent';
+import LiveEvent from '../components/LiveEvent/LiveEvent';
+import Footer from '../components/Footer/Footer';
+
+
+
 
 const Home = () => {
   return (
-    <div>
-      <h2>Welcome to Tea Break Manager!</h2>
-    </div>
+    <>
+    <Header />
+    <HomeComponent />
+    <LiveEvent/>
+    <Footer/>
+  </>
   );
 };
 
