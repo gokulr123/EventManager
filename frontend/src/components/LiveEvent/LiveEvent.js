@@ -7,7 +7,7 @@ function LiveEvent() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/events") // Update the port if needed
+    fetch("https://eventmanager-abvk.onrender.com/api/events") // Update the port if needed
       .then((res) => res.json())
       .then((data) => setEvents(data))
       .catch((err) => console.error("Error fetching events:", err));
