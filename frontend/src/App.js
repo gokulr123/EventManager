@@ -6,6 +6,7 @@ import './App.css';
 import EventPage from './pages/EventPage';
 import ScrollToTop from './components/ScrollToTop';
 import DishSelectionPage from './pages/DishSelectionPage';
+import CreateEventPage from './pages/CreateEventPage';
 
 function App() {
   return (
@@ -20,7 +21,10 @@ function App() {
           <Route path="/home" element={<Home />} />
 
           {/* Route to Event page, after login */}
-          <Route path="/event" element={<EventPage />} />
+          <Route  path="/event/:eventId" element={<EventPage />} />
+
+          {/* Route to Event page, after login */}
+          <Route path="/createevent" element={<CreateEventPage />} />
           
           {/* Route to DishSelection page, after login */}
           <Route path="/dishselection" element={<DishSelectionPage />} />

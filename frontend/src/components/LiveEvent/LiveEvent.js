@@ -1,34 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './LiveEvent.css';
 
 function LiveEvent() {
   const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
 
-  const handleBoxClick = () => {
-    navigate("/event"); // or your route path for EventPage
+  useEffect(() => {
+    fetch("http://localhost:5000/api/events") // Update the port if needed
+      .then((res) => res.json())
+      .then((data) => setEvents(data))
+      .catch((err) => console.error("Error fetching events:", err));
+  }, []);
+
+  const handleBoxClick = (eventId) => {
+    navigate(`/event/${eventId}`); // Dynamic route to view event detail
   };
 
-  const handleJoinClick = (e) => {
-    e.stopPropagation(); // prevents the parent box click
-    alert("Joined!"); // replace with actual join logic
+  const handleJoinClick = (e, eventId) => {
+    e.stopPropagation();
+    // You can replace this alert with an actual POST request to /join
+    alert(`Joined event with ID: ${eventId}`);
   };
+
   return (
     <section className="features" id="features">
       <h1 className="heading"> Live <span>Event</span> </h1>
 
       <div className="box-container">
-        <div className="box" onClick={handleBoxClick} style={{ cursor: "pointer" }}>
-          <img src="TeaPic.png" alt="" />
-          <h3>Team Break Connect</h3>
-          <p>Take a moment to relax, connect, and recharge with your team over a refreshing cup of tea.</p>
-          <div class="event-info">
-        <p><strong>Time:</strong> 3:00 PM</p>
-        <p><strong>Location:</strong> Conference Room A</p>
-        <p><strong>People Who've Joined:</strong> 12 people</p>
-      </div>
-          <a href="" className="btn" onClick={handleJoinClick}>Join Now</a>
-        </div>
+        {events.map((event) => (
+          <div
+            key={event._id}
+            className="box"
+            onClick={() => handleBoxClick(event._id)}
+            style={{ cursor: "pointer" }}
+          >
+            <img src="TeaPic.png" alt="event" />
+            <h3>{event.eventName}</h3>
+            <p>{event.description}</p>
+            <div className="event-info">
+              <p><strong>Time:</strong> {new Date(event.time).toLocaleTimeString()}</p>
+              <p><strong>Location:</strong> {event.venue}</p>
+              <p><strong>People Who've Joined:</strong> {event.participants?.length || 0} people</p>
+            </div>
+            <a href="#" className="btn" onClick={(e) => handleJoinClick(e, event._id)}>Join Now</a>
+          </div>
+        ))}
       </div>
     </section>
   );

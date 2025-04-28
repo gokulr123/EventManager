@@ -70,6 +70,7 @@ form.sign-in-form {
 }
 
 .input-field {
+  
   max-width: 380px;
   width: 100%;
   background-color: #f0f0f0;
@@ -82,6 +83,7 @@ form.sign-in-form {
   position: relative;
 }
 .input-fields {
+  
   max-width: 380px;
   width: 100%;
   background-color: #f0f0f0;
@@ -110,6 +112,7 @@ form.sign-in-form {
 }
 
 .input-field input {
+  text-transform: none;
   background: none;
   outline: none;
   border: none;
@@ -119,6 +122,7 @@ form.sign-in-form {
   color: #333;
 }
 .input-fields input {
+  text-transform: none;
   background: none;
   outline: none;
   border: none;
@@ -299,12 +303,12 @@ form.sign-in-form {
     background: none;
     border: none;
     outline: none;
-    font-size: 1.1rem;
+    font-size: 1.7rem;
     font-weight: 600;
     color: #333;
     width: 100%;
     height: 100%;
-    padding-left: 10px;
+
     border-radius: 55px;
     background-color: transparent;
     appearance: none;
@@ -312,7 +316,11 @@ form.sign-in-form {
     -moz-appearance: none;
     cursor: pointer;
   }
-  
+  .styled-select option.placeholder-option {
+    color: grey;
+    font-weight: 400;
+  }
+ 
   .input-field select.styled-select option {
     color: #333;
     font-weight: 500;

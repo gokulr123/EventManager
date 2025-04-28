@@ -171,7 +171,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     required
     className="styled-select"
   >
-    <option value="">Select Gender</option>
+  <option value="" disabled className="placeholder-option">
+    Select Gender
+  </option>
     <option value="Male">Male</option>
     <option value="Female">Female</option>
     <option value="Gay">Gay</option>
@@ -191,21 +193,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     />
               </div>
               <input type="submit" className="butn" value="Register" />
-              <p className="social-text">Or Sign up with social platforms</p>
-              <div className="social-media">
-                <a href="#" className="social-icon">
-                  <i className="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" className="social-icon">
-                  <i className="fab fa-twitter"></i>
-                </a>
-                <a href="#" className="social-icon">
-                  <i className="fab fa-google"></i>
-                </a>
-                <a href="#" className="social-icon">
-                  <i className="fab fa-linkedin-in"></i>
-                </a>
-              </div>
+              
             </form>
           )}
         </div>

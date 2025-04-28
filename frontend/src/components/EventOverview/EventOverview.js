@@ -5,7 +5,7 @@ const EventOverview = ({ eventName, eventImage, selectedPeople, dishSummary }) =
     <section>
     <div className="event-overview">
       <div className="event-header">
-        <img src={eventImage} alt="Event" className="event-image" />
+        <img src="/TeaPic.png" alt="Event" className="event-image" />
         <h2 className="event-title">{eventName}</h2>
       </div>
 

@@ -1,7 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import './Header.css';
 
 function Header() {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/createevent"); 
+  };
   return (
     <header className="header">
       <a href="#" className="logo">
@@ -16,7 +22,7 @@ function Header() {
         <a href="#blogs">blogs</a>
       </nav>
       <div className="icons">
-        <div className="fas fa-bars" id="menu-btn"></div>
+        <div className="fas fa-bars" id="menu-btn" onClick={handleClick}></div>
         <div className="fas fa-user" id="login-btn"></div>
       </div>
       

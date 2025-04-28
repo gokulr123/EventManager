@@ -25,7 +25,7 @@ const EventDetails = () => {
           <li key={index} className="participant-item" onClick={()=>handleClick(participant)}>
             <div className="participantsimage">
               <img
-                src={participant.image}
+                src="/ProfilePicture.jpg"
                 alt={participant.name}
                 className="profile-picture"
               />
