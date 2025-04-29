@@ -1,36 +1,60 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Updated imports
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginSignupForm from './components/LoginSignupForm';
-import Home from './pages/Home'; // Import the Home component
-import './App.css';
+import Home from './pages/Home';
 import EventPage from './pages/EventPage';
-import ScrollToTop from './components/ScrollToTop';
 import DishSelectionPage from './pages/DishSelectionPage';
 import CreateEventPage from './pages/CreateEventPage';
+import Unauthorized from './pages/unauthorized'; 
+import PrivateRoute from './components/PrivateRoute/PrivateRoute'; 
+import ScrollToTop from './components/ScrollToTop';
+
+import './App.css';
 
 function App() {
   return (
     <Router>
       <div className="App">
-      <ScrollToTop />
+        <ScrollToTop />
         <Routes>
-          {/* Route to LoginSignupForm page */}
+          {/* Public Routes */}
           <Route path="/login" element={<LoginSignupForm />} />
-          
-          {/* Route to Home page, after login */}
-          <Route path="/home" element={<Home />} />
-
-          {/* Route to Event page, after login */}
-          <Route  path="/event/:eventId" element={<EventPage />} />
-
-          {/* Route to Event page, after login */}
-          <Route path="/createevent" element={<CreateEventPage />} />
-          
-          {/* Route to DishSelection page, after login */}
-          <Route path="/dishselection" element={<DishSelectionPage />} />
-          
-          {/* Default route, which can show a redirect to login */}
+          <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/" element={<LoginSignupForm />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/home"
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/event/:eventId"
+            element={
+              <PrivateRoute>
+                <EventPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/createevent"
+            element={
+              <PrivateRoute>
+                <CreateEventPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dishselection"
+            element={
+              <PrivateRoute>
+                <DishSelectionPage />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </div>
     </Router>

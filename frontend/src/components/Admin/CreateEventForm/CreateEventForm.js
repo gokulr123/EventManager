@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../../../Services/Api';
 import './CreateEventForm.css'; // Importing external CSS
 
 const CreateEventForm = () => {
@@ -25,7 +25,7 @@ const CreateEventForm = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('http://localhost:5000/api/events/create', formData, {
+      const res = await axios.post('/events/create', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

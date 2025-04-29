@@ -1,52 +1,112 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from '../../Services/Api';
+import { jwtDecode } from "jwt-decode";
 import './LiveEvent.css';
+import GlobalModal from "../GlobalModal/GlobalModal";
 
 function LiveEvent() {
+  const token = localStorage.getItem('token'); 
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [modal, setModal] = useState({ isOpen: false, message: "" });
+
 
   useEffect(() => {
-    fetch("https://eventmanager-abvk.onrender.com/api/events") // Update the port if needed
-      .then((res) => res.json())
-      .then((data) => setEvents(data))
-      .catch((err) => console.error("Error fetching events:", err));
-  }, []);
+    if (token) {
+      const decoded = jwtDecode(token);
+      setUserId(decoded.id || decoded.userId); // use the correct field as per your backend token payload
+    }
+    const fetchEvents = async () => {
+     // const token = localStorage.getItem('token'); // get the token
+  
+      try {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/events`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // attach the token
+          },
+        });
+  
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+  
+        const data = await res.json();
+        setEvents(data);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+      }
+    };
+  
+    fetchEvents();
+  }, [token]);
 
   const handleBoxClick = (eventId) => {
     navigate(`/event/${eventId}`); // Dynamic route to view event detail
   };
 
-  const handleJoinClick = (e, eventId) => {
+  const handleJoinClick = async (e, eventId) => {
     e.stopPropagation();
-    // You can replace this alert with an actual POST request to /join
-    alert(`Joined event with ID: ${eventId}`);
+    const selectedEvent = events.find(ev => ev._id === eventId);
+    console.log(selectedEvent)
+    const alreadyJoined = selectedEvent?.participants?.includes(userId);
+    if (alreadyJoined) {
+      setModal({ isOpen: true, message: "You have already joined this event!" });
+      return;
+    }
+    try {
+      await axios.post(`/events/${eventId}/join`);
+      navigate(`/event/${eventId}`)
+    } catch (error) {
+      console.error('Join error:', error);
+      setModal({ isOpen: true, message: error.response?.data?.message || 'Something went wrong' });
+    }
+    
   };
+  const closeModal = () => setModal({ isOpen: false, message: "" });
 
   return (
     <section className="features" id="features">
       <h1 className="heading"> Live <span>Event</span> </h1>
 
       <div className="box-container">
-        {events.map((event) => (
-          <div
-            key={event._id}
-            className="box"
-            onClick={() => handleBoxClick(event._id)}
-            style={{ cursor: "pointer" }}
-          >
-            <img src="TeaPic.png" alt="event" />
-            <h3>{event.eventName}</h3>
-            <p>{event.description}</p>
-            <div className="event-info">
-              <p><strong>Time:</strong> {new Date(event.time).toLocaleTimeString()}</p>
-              <p><strong>Location:</strong> {event.venue}</p>
-              <p><strong>People Who've Joined:</strong> {event.participants?.length || 0} people</p>
+        {events.map((event) => {
+          const hasJoined = event.participants?.includes(userId);
+
+          return (
+            <div
+              key={event._id}
+              className="box"
+              onClick={() => handleBoxClick(event._id)}
+              style={{ cursor: "pointer" }}
+            >
+              <img src="TeaPic.png" alt="event" />
+              <h3>{event.eventName}</h3>
+              <p>{event.description}</p>
+              <div className="event-info">
+                <p><strong>Time:</strong> {new Date(event.time).toLocaleTimeString()}</p>
+                <p><strong>Location:</strong> {event.venue}</p>
+                <p><strong>People Who've Joined:</strong> {event.participants?.length || 0} people</p>
+              </div>
+              <button
+                className="btn"
+                onClick={(e) => handleJoinClick(e, event._id)}
+                
+              >
+                {hasJoined ? "Joined" : "Join Now"}
+              </button>
             </div>
-            <a href="#" className="btn" onClick={(e) => handleJoinClick(e, event._id)}>Join Now</a>
-          </div>
-        ))}
+          );
+        })}
       </div>
+      <GlobalModal
+        isOpen={modal.isOpen}
+        message={modal.message}
+        onClose={closeModal}
+      />
     </section>
   );
 }

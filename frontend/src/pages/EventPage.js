@@ -1,5 +1,5 @@
 import React ,{ useEffect, useState }from 'react';
-import axios from "axios";
+import axios from '../Services/Api';
 import Header from "../components/Header/Header";
 import Eventparticipants from '../components/EventParticipantsList/EventparticipantsList'
 import EventActionPanel from '../components/EventActionpanel/EventActionpanel'
@@ -16,8 +16,9 @@ const EventPage = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`https://eventmanager-abvk.onrender.com/api/events/${eventId}`); // Fetch event data by eventId
+        const response = await axios.get(`/events/${eventId}`); // Fetch event data by eventId
         setEventData(response.data);
+        
       } catch (error) {
         console.error("Error fetching event data", error);
       }
@@ -38,7 +39,7 @@ const EventPage = () => {
     selectedPeople={eventData.participants}
     dishSummary={eventData.dishSummary}
 />
-    <Eventparticipants/>
+    <Eventparticipants participants={eventData.participants}  eventId={eventId}/>
     <EventActionPanel/>
     <Footer/>
   </>

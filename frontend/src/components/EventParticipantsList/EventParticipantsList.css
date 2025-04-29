@@ -1,61 +1,87 @@
-.event-container {
-    max-width: 1000px;
-    margin: 0 auto;
+
+  .event-details {
     padding: 20px;
-    background-color: white;
+    background-color: #f9f9f9;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
-  .event-header {
-    text-align: center;
+   
+
+  .participants-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
   }
-  .event-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-  }
-  .event-header p {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-  }
-  .attendees, .menu-selection {
-    margin-bottom: 20px;
-  }
-  .attendee-list {
+
+  .participant-item {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
     justify-content: space-between;
   }
-  .attendee-item {
-    width: 45%;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #f1f1f1;
-    border-radius: 8px;
+
+  .participantsimageimage {
+    flex-shrink: 0;
+    margin-right: 15px;
+  }
+
+  .profile-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .name {
+    flex-grow: 1;
     text-align: center;
+    font-size: 16px;
+    font-weight: bold;
   }
-  .attendee-item button {
-    padding: 10px;
-    background-color: #008CBA;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+
+  .status-circle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: green;
   }
-  .attendee-item button:disabled {
-    background-color: gray;
-    cursor: not-allowed;
+
+  .status-circle.inactive {
+    background-color: red;
   }
-  .menu-selection select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+
+  /* Responsive Styles */
+  @media (max-width: 600px) {
+    .participant-item {
+      text-align: center;
+    }
+
+    .name {
+      margin-top: 10px;
+    }
+
+    .status-circle {
+      margin-top: 10px;
+    }
   }
-  .total-price {
-    display: flex;
-    justify-content: space-between;
-    font-size: 1.2rem;
-    margin-top: 20px;
+
+  @media (max-width: 400px) {
+    .profile-picture {
+      width: 35px;
+      height: 35px;
+    }
+
+    .name {
+      font-size: 14px;
+    }
+
+    .status-circle {
+      width: 10px;
+      height: 10px;
+    }
   }
-  

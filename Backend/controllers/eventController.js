@@ -1,5 +1,6 @@
 const Event = require('../models/event');
 const User = require('../models/User');
+
 //const DishSelectionHistory = require('../models/dishSelectionHistory');
 
 exports.createEvent = async (req, res) => {
@@ -64,5 +65,50 @@ exports.getEvents = async (req, res) => {
       res.status(200).json(event); // Send back the event data
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  };
+
+  exports.joinEventById=async (req, res) => {
+
+    try {
+      const eventId = req.params.eventId;
+      const userId = req.userId;
+  
+      const event = await Event.findById(eventId);
+  
+      if (!event) {
+        return res.status(404).json({ message: 'Event not found' });
+      }
+  
+      // Check if user already joined
+      if (event.participants.includes(userId)) {
+        return res.status(400).json({ message: 'User already joined this event' });
+      }
+  
+      // Add user to participants list
+      event.participants.push(userId);
+      await event.save();
+      
+    // Fetch user data to send in WebSocket message
+    const user = await User.findById(userId); // Ensure you have user model and replace as needed
+    const io = req.app.get('io');
+    // Emit event to all connected clients
+    if (io) {
+      io.emit('new-participant', {
+        eventId,
+        participant: {
+          userName: user.userName, // Or use user.username depending on your model
+          status: 'active',
+          id: user._id
+        }
+      });
+    } else {
+      console.error('WebSocket server is not initialized');
+    }
+  
+      res.status(200).json({ message: 'User successfully joined the event' });
+    } catch (error) {
+      console.error('Error joining event:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
     }
   };
