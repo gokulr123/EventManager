@@ -1,35 +1,86 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import io from 'socket.io-client';
+import axios from "../../Services/Api";
+import confetti from 'canvas-confetti';
 
-const RandomPickModal = ({ participants, onClose }) => {
+const socket = io('http://localhost:5000');
+
+const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, participants, eventId, onClose }) => {
+  const token = localStorage.getItem('token');
   const [numToPick, setNumToPick] = useState(1);
-  const [countdown, setCountdown] = useState(0);
+  const [countdown, setCountdown] = useState(-1);
   const [picked, setPicked] = useState([]);
   const [showResult, setShowResult] = useState(false);
 
-  const handlePick = () => {
-    setCountdown(5);
-    setPicked([]);
-    setShowResult(false);
+  const canvasRef = useRef();
 
-    const interval = setInterval(() => {
-      setCountdown(prev => {
-        if (prev === 1) {
-          clearInterval(interval);
-          const shuffled = [...participants].sort(() => 0.5 - Math.random());
-          setPicked(shuffled.slice(0, numToPick));
-          setShowResult(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  useEffect(() => {
+    socket.on("reset-random-pick-ui", () => {
+      setShowRandomNames(true)
+      setShowModal(false);
+      setShowResult(false);
+      setPicked([]);
+      setCountdown(-1);
+    });
+
+    return () => {
+      socket.off("reset-random-pick-ui");
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on("random-pick-result", (data) => {
+      setPicked(data.selected);
+      setCountdown(3);
+      setShowResult(false);
+
+      const interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev === 1) {
+            clearInterval(interval);
+            triggerConfetti(); // Trigger confetti 1 second before result
+            setShowResult(true);
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    });
+
+    return () => {
+      socket.off("random-pick-result");
+    };
+  }, []);
+
+  const handlePick = () => {
+    socket.emit("start-random-pick", { eventId });
+    axios.post(`/api/events/select-random`,
+      { eventId, count: numToPick },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    ).catch((err) => console.error(err));
   };
+
+  const triggerConfetti = () => {
+    confetti({
+      particleCount: 200,
+      spread: 100,
+      origin: { y: 0.6 },
+      zIndex: 9999
+    });
+  };
+
+  if (!isOpen) return null;
 
   return (
     <div className="modal-backdrop">
       <div className="modal">
         <h3>Random Pick</h3>
-        {!showResult ? (
+
+        {!showResult && countdown < 0 && (
           <>
             <label>Number of people to pick:</label>
             <input
@@ -40,14 +91,21 @@ const RandomPickModal = ({ participants, onClose }) => {
               onChange={(e) => setNumToPick(parseInt(e.target.value))}
             />
             <button onClick={handlePick}>Pick</button>
-            {countdown > 0 && <p>Picking in {countdown} seconds...</p>}
           </>
-        ) : (
+        )}
+
+        {countdown >= 0 && !showResult && (
+          <div className="countdown-text">
+            <p>Picking in {countdown} seconds...</p>
+          </div>
+        )}
+
+        {showResult && (
           <>
-            <h4>Selected Participants:</h4>
+            <h4>Selected Participants 🎉:</h4>
             <ul>
               {picked.map((person, idx) => (
-                <li key={idx}>{person.name}</li>
+                <li key={idx}>{person.userName}</li>
               ))}
             </ul>
             <button onClick={onClose}>OK</button>
@@ -76,6 +134,7 @@ const RandomPickModal = ({ participants, onClose }) => {
           width: 300px;
           box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
           text-align: center;
+          font-size: 1.7rem;
         }
 
         input {
@@ -105,6 +164,15 @@ const RandomPickModal = ({ participants, onClose }) => {
 
         li {
           margin: 5px 0;
+        }
+
+        .countdown-text {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100px;
+          font-size: 2rem;
+          font-weight: bold;
         }
       `}</style>
     </div>

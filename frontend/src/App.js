@@ -10,6 +10,7 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import ScrollToTop from './components/ScrollToTop';
 
 import './App.css';
+import AdminDashboard from './pages/AdminDashBoardPage';
 
 function App() {
   return (
@@ -40,15 +41,15 @@ function App() {
             }
           />
           <Route
-            path="/createevent"
+            path="/admin"
             element={
               <PrivateRoute>
-                <CreateEventPage />
+               <AdminDashboard/>
               </PrivateRoute>
             }
           />
           <Route
-            path="/dishselection"
+            path="/dishselection/:eventId"
             element={
               <PrivateRoute>
                 <DishSelectionPage />

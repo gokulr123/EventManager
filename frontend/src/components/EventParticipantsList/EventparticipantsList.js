@@ -2,16 +2,17 @@ import React, { useState, useEffect } from "react";
 import './EventParticipantsList.css';
 import ParticipantDishModal from '../ParticipantDishModal/ParticipantDishModal';
 import { io } from "socket.io-client";
+import socket from '../../Services/Socket'
 
 
 
-const EventDetails = ({ eventId, participants }) => {
+const EventDetails = ({ eventId, participants}) => {
   const [participantsList, setParticipantsList] = useState(participants || []);
   const [selectedParticipant, setSelectedParticipant] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const socket = io('https://eventmanager-abvk.onrender.com'); // Use your actual backend URL
+    const socket = io(`${process.env.REACT_APP_API_BASE_URL}`); // Use your actual backend URL
 
     socket.on('connect', () => {
       console.log("Connected to WebSocket");
@@ -46,12 +47,12 @@ const EventDetails = ({ eventId, participants }) => {
               <div className="participantsimage">
                 <img
                   src="/ProfilePicture.jpg"
-                  alt={participant.userName}
+                  alt={participant.user.userName}
                   className="profile-picture"
                 />
               </div>
               <div className="name">
-                <span>{participant.userName}</span>
+                <span>{participant.user.userName}</span>
               </div>
               <div
                 className={`status-circle ${participant.status === "active" ? "active" : "inactive"}`}

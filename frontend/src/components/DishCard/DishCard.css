@@ -1,0 +1,31 @@
+.dish-card {
+    border: 1px solid #ddd;
+    padding: 16px;
+    width: 340px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    text-align: center;
+  }
+  
+  .dish-card h3 {
+    margin: 10px 0;
+  }
+  .button-wrapper {
+    display: flex;
+    justify-content: center;  /* horizontally centers the button */
+    margin-top: 10px; /* optional spacing */
+  }
+  .dish-card button {
+    display: flex;
+    align-items: center; /* vertically centers items */
+    justify-content: center; /* centers content horizontally (optional) */
+    gap: 8px; /* adds space between text and icon */
+    padding: 8px 12px;
+    margin-top: 10px;
+    background-color: #ff7800;;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }

@@ -22,6 +22,7 @@ const SearchBar = ({ value, onChange }) => (
       }
       .top-bar input {
         flex-grow: 1;
+        border-radius: 5px;
         padding: 8px;
         font-size: 14px;
         border: none;

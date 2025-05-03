@@ -34,7 +34,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     const handleLogin = async (e) => {
       e.preventDefault();
       try {
-        const res = await axios.post('auth/login', { ustId, password }); // adjust port if needed
+        const res = await axios.post('/api/auth/login', { ustId, password }); // adjust port if needed
         const token = res.data.token;
         setMessage("Login successful!");
         localStorage.setItem('token', token); // Store token for future authenticated requests
@@ -46,7 +46,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-          const res = await axios.post('auth/register', {
+          const res = await axios.post('/api/auth/register', {
             ustId,
             userName,
             password,

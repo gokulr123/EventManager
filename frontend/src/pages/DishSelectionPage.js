@@ -1,30 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { jwtDecode } from "jwt-decode";
 import SearchBar from '../components/DishSearchBar/DishSearchBar';
 import DishCard from '../components/DishCard/DishCard';
 import CartModal from '../components/DishCartModal/DishCartModal';
-import { FaShoppingCart } from 'react-icons/fa';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
+import FinalConfirmModal from '../components/DishCartModal/FinalConfirmationModal'
 import DishBottomCartBar from '../components/DishBottomcartBar/DishBottomCartBar';
+import { useParams } from "react-router-dom";
 
-const mockDishes = [
-  { id: 1, name: "Tea", group: "Beverages" },
-  { id: 2, name: "Samosa", group: "Snacks" },
-  { id: 3, name: "Coffee", group: "Beverages" },
-];
+
+
 
 const DishSelectionPage = () => {
+  const { eventId } = useParams()
+  const token = localStorage.getItem('token');
   const [searchTerm, setSearchTerm] = useState('');
   const [cart, setCart] = useState({});
   const [showModal, setShowModal] = useState(false);
- 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [dishes, setDishes] = useState([]);
+  const [userId, setUserId] = useState(null);
 
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUserId(decoded.id || decoded.userId); // Adjust based on your backend
+      } catch (err) {
+        console.error('Invalid token:', err);
+      }
+    }
+   
+    
+    const fetchDishes = async () => {
+      try {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/dishes`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        setDishes(data);
+      } catch (error) {
+        console.error('Failed to fetch dishes:', error.message);
+      }
+    };
+
+    fetchDishes();
+  }, [token]);
+  const handleConfirm = async () => {
+    try {
+      const selectedDishes = Object.values(cart).map(item => ({
+        dish: item.id,
+        quantity: item.quantity
+      }));
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/events/${eventId}/participants/dishes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` // only if your API requires auth
+        },
+        body: JSON.stringify({ selectedDishes })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to submit dishes');
+      }
+  
+      const data = await response.json();
+      console.log('Success:', data);
+      // Optionally show toast or success UI here
+  
+    } catch (error) {
+      console.error('Error submitting dishes:', error);
+      // Optionally show error toast or modal
+    }
+  };
   const addToCart = (dish) => {
+    console.log("cart",cart)
     setCart(prev => ({
       ...prev,
-      [dish.id]: {
+      [dish._id]: {
         ...dish,
-        quantity: (prev[dish.id]?.quantity || 0) + 1
+        quantity: (prev[dish._id]?.quantity || 0) + 1
       }
     }));
   };
@@ -47,30 +113,61 @@ const DishSelectionPage = () => {
     });
   };
 
-  const filteredDishes = mockDishes.filter(d =>
+  const filteredDishes = dishes.filter(d =>
     d.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <>
-    <Header/>
-    <div className="dish-page">
-      <SearchBar value={searchTerm} onChange={setSearchTerm} />
+      <Header />
+      <div className="dish-page">
+        <SearchBar value={searchTerm} onChange={setSearchTerm} />
 
-      <div className="dish-list" style={{ marginTop: '100px', minHeight:'700px' }}>
-        {filteredDishes.map(dish => (
-          <DishCard key={dish.id} dish={dish} onAdd={() => addToCart(dish)} />
-        ))}
+        <div className="dish-list">
+          {filteredDishes.map(dish => (
+            <DishCard key={dish._id} dish={dish} onAdd={() => addToCart(dish)} />
+          ))}
+        </div>
+
+        <DishBottomCartBar
+          cartCount={Object.keys(cart).length}
+          onCartClick={() => setShowModal(true)}
+        />
+
+        {showModal && (
+          <CartModal
+            cart={cart}
+            onUpdate={updateQuantity}
+            onClose={() => setShowModal(false)}
+            onConfirm={() => setShowConfirmModal(true)}
+          />
+        )}
+        {showConfirmModal && (
+  <FinalConfirmModal
+    onCancel={() => setShowConfirmModal(false)}
+    onOk={async () => {
+      await handleConfirm();        // submit to backend
+      setShowConfirmModal(false);  // close confirm modal
+      setShowModal(false);         // close cart modal
+    }}
+  />
+)}
+        <style jsx>{`
+      .dish-page {
+  padding: 80px 20px 20px;
+  min-height: 700px;
+}
+
+.dish-list {
+  font-size:1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+    `}</style>
       </div>
-
-
-      <DishBottomCartBar cartCount={Object.keys(cart).length} onCartClick={() => setShowModal(true)}/>
-
-      {showModal && (
-        <CartModal cart={cart} onUpdate={updateQuantity} onClose={() => setShowModal(false)} />
-      )}
-    </div>
-    <Footer/>
+      <Footer />
     </>
   );
 };

@@ -1,7 +1,8 @@
 import React from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 
-const CartModal = ({ cart, onUpdate, onClose }) => (
+const CartModal = ({ cart, onUpdate, onClose ,onConfirm}) => (
+  
   <div className="modal-overlay">
     <div className="modal">
       <h3>Your Selection</h3>
@@ -9,15 +10,16 @@ const CartModal = ({ cart, onUpdate, onClose }) => (
         <div key={item.id} className="cart-item">
           <span>{item.name}</span>
           <div className="qty-control">
-            <button onClick={() => onUpdate(item.id, -1)}><FaMinus /></button>
+            <button onClick={() => onUpdate(item._id, -1)}><FaMinus /></button>
             <span>{item.quantity}</span>
-            <button onClick={() => onUpdate(item.id, 1)}><FaPlus /></button>
+            <button onClick={() => onUpdate(item._id, 1)}><FaPlus /></button>
           </div>
         </div>
       ))}
-      <button className="confirm-btn" onClick={onClose}>
-        Confirm
-      </button>
+       <div className="button-row">
+        <button className="cancel-btn" onClick={onClose}>Cancel</button>
+        <button className="confirm-btn" onClick={onConfirm}>Confirm</button>
+      </div>
 
       <style jsx>{`
         .modal-overlay {
@@ -69,6 +71,35 @@ const CartModal = ({ cart, onUpdate, onClose }) => (
           border-radius: 8px;
           font-size: 15px;
           cursor: pointer;
+        }
+        .confirm-btn:hover {
+          background-color: #1976d2;
+        }
+           .button-row {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 20px;
+        }
+        .cancel-btn {
+          background-color: #e0e0e0;
+          color: #333;
+          padding: 10px;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          width: 45%;
+        }
+        .cancel-btn:hover {
+          background-color: #ccc;
+        }
+        .confirm-btn {
+          background-color: #2196f3;
+          color: white;
+          padding: 10px;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          width: 45%;
         }
         .confirm-btn:hover {
           background-color: #1976d2;

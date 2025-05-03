@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createEvent, joinEvent ,getEvents,getEventById,joinEventById} = require('../controllers/eventController');
+const { createEvent, joinEvent ,getEvents,getEventById,joinEventById,addDishesToParticipant, selectRandomParticipants} = require('../controllers/eventController');
 const verifyToken = require('../middleware/VerifyToken');
 //const { authenticate } = require('../middleware/authMiddleware');
 
@@ -9,5 +9,7 @@ router.get('/',verifyToken, getEvents);
 router.get('/:eventId',verifyToken, getEventById);
 router.post('/join',verifyToken, joinEvent);
 router.post('/:eventId/join',verifyToken,joinEventById)
+router.post('/:eventId/participants/dishes',verifyToken,addDishesToParticipant)
+router.post('/select-random',verifyToken, selectRandomParticipants);
 
 module.exports = router;

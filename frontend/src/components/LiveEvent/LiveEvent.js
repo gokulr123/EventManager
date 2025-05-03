@@ -4,6 +4,9 @@ import axios from '../../Services/Api';
 import { jwtDecode } from "jwt-decode";
 import './LiveEvent.css';
 import GlobalModal from "../GlobalModal/GlobalModal";
+import io from 'socket.io-client';
+
+const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
 
 function LiveEvent() {
   const token = localStorage.getItem('token'); 
@@ -22,7 +25,7 @@ function LiveEvent() {
      // const token = localStorage.getItem('token'); // get the token
   
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/events`, {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/events`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -51,14 +54,15 @@ function LiveEvent() {
   const handleJoinClick = async (e, eventId) => {
     e.stopPropagation();
     const selectedEvent = events.find(ev => ev._id === eventId);
-    console.log(selectedEvent)
-    const alreadyJoined = selectedEvent?.participants?.includes(userId);
+   
+    const alreadyJoined = selectedEvent?.participants?.some(p => p.user === userId);
     if (alreadyJoined) {
       setModal({ isOpen: true, message: "You have already joined this event!" });
       return;
     }
     try {
       await axios.post(`/events/${eventId}/join`);
+      socket.emit('join-event-room', eventId);
       navigate(`/event/${eventId}`)
     } catch (error) {
       console.error('Join error:', error);
@@ -74,7 +78,7 @@ function LiveEvent() {
 
       <div className="box-container">
         {events.map((event) => {
-          const hasJoined = event.participants?.includes(userId);
+          const hasJoined = event?.participants?.some(p => p.user === userId)
 
           return (
             <div

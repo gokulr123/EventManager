@@ -1,6 +1,22 @@
-import React from "react";
+import React ,{useState,useEffect} from "react";
+import io from "socket.io-client";
 
-const EventOverview = ({ eventName, eventImage, selectedPeople, dishSummary }) => {
+const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
+
+const EventOverview = ({eventId, eventName,dishSummary ,showRandomNames}) => {
+  const [selectedPeople, setSelectedPeople] = useState([]);
+  useEffect(() => {
+    socket.emit("join-event-room", eventId);
+    // Listen for real-time updates
+    socket.on("random-pick-result", (data) => {
+      console.log("Received update:", data.selected);
+      setSelectedPeople(data.selected);
+    });
+
+    return () => {
+      socket.off("random-pick-result");
+    };
+  },[]);
   return (
     <section>
     <div className="event-overview">
@@ -10,7 +26,11 @@ const EventOverview = ({ eventName, eventImage, selectedPeople, dishSummary }) =
       </div>
 
       <p className="selected-names">
-        <strong>Selected:</strong> {selectedPeople.join(", ")}
+      {showRandomNames && (
+    <>
+      <strong>Selected:</strong> {selectedPeople.map(p => p.userName).join(", ")}
+    </>
+  )}
       </p>
 
       <div className="dish-summary">

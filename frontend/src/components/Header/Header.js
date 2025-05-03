@@ -7,7 +7,7 @@ function Header() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/createevent"); 
+    navigate("/admin"); 
   };
   const handleLogout=()=>
   {
