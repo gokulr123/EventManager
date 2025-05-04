@@ -1,6 +1,6 @@
 const Event = require('../models/event');
 const User = require('../models/User');
-
+const { generateDishSummary } = require('../controllers/dishController');
 //const DishSelectionHistory = require('../models/dishSelectionHistory');
 
 exports.createEvent = async (req, res) => {
@@ -123,7 +123,7 @@ exports.getEvents = async (req, res) => {
         eventId,
         participant: {
           user: {userName: user.userName, 
-            status: 'active',
+            isDishSelected:false,
             id: user._id}
           
         }
@@ -161,6 +161,7 @@ exports.getEvents = async (req, res) => {
       }
   
       await event.save();
+      await generateDishSummary(eventId, req.app.get("io"));
       res.status(200).json({ message: 'Dishes added successfully' });
     } catch (err) {
       console.error(err);

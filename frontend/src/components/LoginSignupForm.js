@@ -3,11 +3,13 @@ import axios from '../Services/Api';
 import './LoginSignupForm.css';
 import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import GlobalLoading from './GlobalModal/GlobalLoading';
 
 
 
   const LoginSignupForm = () => {
     const [isSignUp, setIsSignUp] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [ustId, setUstId] = useState('');
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
@@ -33,6 +35,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
   
     const handleLogin = async (e) => {
       e.preventDefault();
+      setLoading(true); 
       try {
         const res = await axios.post('/api/auth/login', { ustId, password }); // adjust port if needed
         const token = res.data.token;
@@ -41,6 +44,8 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
         navigate('/home');;
       } catch (err) {
         setMessage(err.response?.data?.message || "Something went wrong");
+      }finally {
+        setLoading(false); // Hide loader after success or failure
       }
     };
     const handleRegister = async (e) => {
@@ -64,6 +69,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
   return (
     <div className={`container ${isSignUp ? 'sign-up-mode' : ''}`}>
+      {loading && <GlobalLoading/>}
       <div className="forms-container">
         <div className="signin-signup">
           {!isSignUp ? (
@@ -96,16 +102,16 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
               <input type="submit" value="Login" className="butn solid" />
               <p className="social-text">Or Sign in with social platforms</p>
               <div className="social-media">
-                <a href="" className="social-icon">
+                <a className="social-icon">
                   <i className="fab fa-facebook-f"></i>
                 </a>
-                <a href="" className="social-icon">
+                <a className="social-icon">
                   <i className="fab fa-twitter"></i>
                 </a>
-                <a href="" className="social-icon">
+                <a  className="social-icon">
                   <i className="fab fa-google"></i>
                 </a>
-                <a href="" className="social-icon">
+                <a  className="social-icon">
                   <i className="fab fa-linkedin-in"></i>
                 </a>
               </div>
@@ -203,7 +209,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
         <div className="panel left-panel">
           <div className="content">
             <h3>New here?</h3>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+            <p>Create your account and start enjoying daily events with friends.</p>
             <button className="butn transparent" onClick={toggleForm}>
               Sign up
             </button>
@@ -213,7 +219,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
         <div className="panel right-panel">
           <div className="content">
             <h3>One of us?</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            <p>Sign in to continue where you left off.</p>
             <button className="butn transparent" onClick={toggleForm}>
               Sign in
             </button>

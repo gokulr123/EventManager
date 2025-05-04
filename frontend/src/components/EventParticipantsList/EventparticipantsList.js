@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import './EventParticipantsList.css';
 import ParticipantDishModal from '../ParticipantDishModal/ParticipantDishModal';
 import { io } from "socket.io-client";
-import socket from '../../Services/Socket'
+
 
 
 
@@ -10,7 +10,9 @@ const EventDetails = ({ eventId, participants}) => {
   const [participantsList, setParticipantsList] = useState(participants || []);
   const [selectedParticipant, setSelectedParticipant] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  useEffect(() => {
+    setParticipantsList(participants || []);
+  }, [participants]);
   useEffect(() => {
     const socket = io(`${process.env.REACT_APP_API_BASE_URL}`); // Use your actual backend URL
 
@@ -18,10 +20,7 @@ const EventDetails = ({ eventId, participants}) => {
       console.log("Connected to WebSocket");
     });
 
-    socket.on('new-participant', (data) => {
-      console.log("New participant received:", data); 
-      console.log(data.eventId)
-      console.log(eventId)
+    socket.on('new-participant', (data) => { 
       if (data.eventId === eventId) {
         setParticipantsList((prev) => [...prev, data.participant]);
       }
@@ -55,7 +54,7 @@ const EventDetails = ({ eventId, participants}) => {
                 <span>{participant.user.userName}</span>
               </div>
               <div
-                className={`status-circle ${participant.status === "active" ? "active" : "inactive"}`}
+                className={`status-circle ${participant.isDishSelected ? "active" : "inactive"}`}
               ></div>
             </li>
           ))}

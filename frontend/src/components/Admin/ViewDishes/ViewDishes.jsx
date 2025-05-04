@@ -1,4 +1,5 @@
 import React from 'react';
+import DishSelectionToggle from '../DishSelectionToggle/DishSelectionToggle'
 
 const DishList = () => {
   // Dummy dish data
@@ -50,6 +51,7 @@ const DishList = () => {
           <div style={styles.detail}>💵 Price: ₹{dish.price}</div>
         </div>
       ))}
+      <DishSelectionToggle/>
     </div>
   );
 };

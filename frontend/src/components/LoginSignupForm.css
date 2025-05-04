@@ -200,7 +200,7 @@ form.sign-in-form {
 }
 
 .butn:hover {
-  background-color: #4d84e2;
+  background-color: #e56700;
 }
 .panels-container {
   position: absolute;
@@ -423,7 +423,7 @@ form.sign-in-form {
   }
 
   .panel p {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     padding: 0.5rem 0;
   }
 

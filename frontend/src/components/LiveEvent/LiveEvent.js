@@ -61,7 +61,7 @@ function LiveEvent() {
       return;
     }
     try {
-      await axios.post(`/events/${eventId}/join`);
+      await axios.post(`/api/events/${eventId}/join`);
       socket.emit('join-event-room', eventId);
       navigate(`/event/${eventId}`)
     } catch (error) {

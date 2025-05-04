@@ -19,6 +19,7 @@ const dishSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  active: { type: Boolean, default: false }
 });
 
 // Create the model based on the schema

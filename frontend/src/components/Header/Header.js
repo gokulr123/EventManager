@@ -1,13 +1,32 @@
-import React, { useState }from "react";
+import React, { useState ,useEffect}from "react";
 import { useNavigate } from "react-router-dom";
 import './Header.css';
+import { jwtDecode } from 'jwt-decode';
+import { Link } from 'react-router-dom';
+import GlobalModal from '../GlobalModal/GlobalModal'
 
 function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // For user dropdown
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
   const navigate = useNavigate();
-
   const handleClick = () => {
-    navigate("/admin"); 
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        if (!decoded.isAdmin) {
+          setModalMessage("You don't have admin access to view this page.");
+          setModalOpen(true);
+        }
+        else{
+          navigate("/admin");
+        }
+      } catch (err) {
+        console.error('Invalid token:', err);
+      }
+    }
+     
   };
   const handleLogout=()=>
   {
@@ -18,10 +37,11 @@ function Header() {
     setIsDropdownOpen(!isDropdownOpen);
   };
   return (
+    <>
     <header className="header">
-      <a href="#" className="logo">
-        <i className="fas fa-cocktail"></i> EventLoop
-      </a>
+      <Link to="/Home" className="logo">
+  <i className="fas fa-cocktail"></i> EventLoop
+</Link>
       <nav className="navbar">
         <a href="#home">home</a>
         <a href="#features">features</a>
@@ -41,6 +61,14 @@ function Header() {
       </div>
       
     </header>
+    <GlobalModal
+        isOpen={modalOpen}
+        message={modalMessage}
+        onClose={() => {
+          setModalOpen(false);
+        }}
+      />
+    </>
   );
 }
 

@@ -1,0 +1,52 @@
+.toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 350px;
+    margin: 1rem auto;
+  }
+  
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  
+  .toggle input {
+    display: none;
+  }
+  
+  .slider {
+    position: relative;
+    width: 40px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .slider::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 1px;
+    left: 1px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+  
+  .toggle input:checked + .slider {
+    background-color: #4caf50;
+  }
+  
+  .toggle input:checked + .slider::before {
+    transform: translateX(20px);
+  }
+  
+  .label-text {
+    font-size: 16px;
+  }
+  

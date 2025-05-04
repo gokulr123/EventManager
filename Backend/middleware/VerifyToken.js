@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
       return res.status(403).json({ message: 'Failed to authenticate token' });
     }
     // Token is valid, save the decoded data to the request object for use in subsequent routes
-    req.userId = decoded.id; // Assuming the token contains the user's id
+    req.user = decoded; // Assuming the token contains the user's id
     next(); // Proceed to the next middleware or route handler
   });
 };

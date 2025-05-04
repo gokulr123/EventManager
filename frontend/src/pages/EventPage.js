@@ -17,21 +17,31 @@ const EventPage = () => {
   const [eventData, setEventData] = useState(null);
   const [showRandomNames, setShowRandomNames] = useState(false);
   
-
+  const fetchEvent = async () => {
+    try {
+      const response = await axios.get(`/api/events/${eventId}`);
+      setEventData(response.data);
+    } catch (error) {
+      console.error("Error fetching event data", error);
+    }
+  };
   useEffect(() => {
+    socket.emit("join-event-room", eventId);
     setShowRandomNames(false)
-    const fetchEvent = async () => {
-      try {
-        const response = await axios.get(`/api/events/${eventId}`); // Fetch event data by eventId
-        setEventData(response.data);
-        
-      } catch (error) {
-        console.error("Error fetching event data", error);
-      }
-    };
-
     fetchEvent();
   }, [eventId]); // Re-fetch data when eventId changes
+
+  useEffect(() => {
+    const handleEventUpdated = () => {
+      fetchEvent();
+    };
+  
+    socket.on("event-updated", handleEventUpdated);
+  
+    return () => {
+      socket.off("event-updated", handleEventUpdated);
+    };
+  }, [eventId]);
 
   if (!eventData) {
     return <p>Loading event details...</p>;

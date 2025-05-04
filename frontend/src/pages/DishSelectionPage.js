@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import SearchBar from '../components/DishSearchBar/DishSearchBar';
 import DishCard from '../components/DishCard/DishCard';
 import CartModal from '../components/DishCartModal/DishCartModal';
@@ -8,11 +9,15 @@ import Footer from '../components/Footer/Footer';
 import FinalConfirmModal from '../components/DishCartModal/FinalConfirmationModal'
 import DishBottomCartBar from '../components/DishBottomcartBar/DishBottomCartBar';
 import { useParams } from "react-router-dom";
+import io from "socket.io-client";
+
+const socket = io(`${process.env.REACT_APP_API_BASE_URL}`); 
 
 
 
 
 const DishSelectionPage = () => {
+  const navigate = useNavigate();
   const { eventId } = useParams()
   const token = localStorage.getItem('token');
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,9 +64,10 @@ const DishSelectionPage = () => {
   const handleConfirm = async () => {
     try {
       const selectedDishes = Object.values(cart).map(item => ({
-        dish: item.id,
+        dish: item._id,
         quantity: item.quantity
       }));
+      console.log("selecteddishes",selectedDishes)
       const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/events/${eventId}/participants/dishes`, {
         method: 'POST',
         headers: {
@@ -77,6 +83,8 @@ const DishSelectionPage = () => {
   
       const data = await response.json();
       console.log('Success:', data);
+      socket.emit("event-update", { eventId });
+      navigate(`/event/${eventId}`);
       // Optionally show toast or success UI here
   
     } catch (error) {
@@ -114,7 +122,7 @@ const DishSelectionPage = () => {
   };
 
   const filteredDishes = dishes.filter(d =>
-    d.name.toLowerCase().includes(searchTerm.toLowerCase())
+    d.name.toLowerCase().startsWith(searchTerm.toLowerCase())
   );
 
   return (

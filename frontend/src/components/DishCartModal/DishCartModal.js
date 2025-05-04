@@ -38,6 +38,7 @@ const CartModal = ({ cart, onUpdate, onClose ,onConfirm}) => (
           width: 300px;
           max-height: 80vh;
           overflow-y: auto;
+          font-size: 1.7rem;
         }
         .cart-item {
           display: flex;
@@ -62,7 +63,6 @@ const CartModal = ({ cart, onUpdate, onClose ,onConfirm}) => (
           background-color: #d5d5d5;
         }
         .confirm-btn {
-          margin-top: 20px;
           background-color: #2196f3;
           color: white;
           padding: 10px;
