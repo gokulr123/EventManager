@@ -43,7 +43,12 @@ const EventActionPanel = ({eventId,eventData,participants,setShowRandomNames}) =
     if (!hasJoined) {
       // Call API or set state
       try {
-        await axios.post(`/api/events/${eventId}/join`);
+        const token = localStorage.getItem('token'); // Get the token from localStorage
+  await axios.post(`/api/events/${eventId}/join`, {}, {
+    headers: {
+      Authorization: `Bearer ${token}` // ✅ This sends the token to your backend
+    }
+  });
         setHasJoined(true);
       } catch (error) {
         console.error('Join error:', error);

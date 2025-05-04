@@ -27,6 +27,9 @@ exports.createEvent = async (req, res) => {
 exports.joinEvent = async (req, res) => {
   try {
     const { eventId } = req.body;
+    
+    
+    console.log(req.user)
     const userId = req.user.id; // Get userId from the token
 
     const event = await Event.findById(eventId);
@@ -51,7 +54,7 @@ exports.joinEvent = async (req, res) => {
       isDishSelected: false
     });
     
-    await event.save();
+   // await event.save();
     res.status(200).json({ message: 'Successfully joined the event' });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -89,7 +92,8 @@ exports.getEvents = async (req, res) => {
 
     try {
       const eventId = req.params.eventId;
-      const userId = req.userId;
+      
+      const userId = req.user.id; ;
   
       const event = await Event.findById(eventId);
   
@@ -141,7 +145,7 @@ exports.getEvents = async (req, res) => {
 
   exports.addDishesToParticipant = async (req, res) => {
     const { eventId } = req.params;
-    const userId = req.userId; // Assuming you're using auth middleware
+    const userId = req.user.id; // Assuming you're using auth middleware
     const { selectedDishes } = req.body; // [{ dish: <dishId>, quantity: <number> }, ...]
     try {
       const event = await Event.findById(eventId);
