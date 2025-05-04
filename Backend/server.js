@@ -8,11 +8,11 @@ const eventRoutes = require('./routes/eventRoutes');
 const dishRoutes= require('./routes/dishRoutes');
 
 const app = express();
-// app.use(cors({
-//   origin: 'https://event-manager-phi-two.vercel.app', // ✅ your deployed frontend URL
-//   credentials: true
-// }));
-app.use(cors());
+app.use(cors({
+  origin: 'https://event-manager-phi-two.vercel.app', // ✅ your deployed frontend URL
+  credentials: true
+}));
+//app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
@@ -26,8 +26,8 @@ const server = http.createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(server, {
   cors: {
-    //origin: 'https://event-manager-phi-two.vercel.app', // You can also specify your frontend URL here
-   origin:"*",
+    origin: 'https://event-manager-phi-two.vercel.app', // You can also specify your frontend URL here
+   //origin:"*",
     methods: ['GET', 'POST']
   }
 });
