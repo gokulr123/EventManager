@@ -30,6 +30,8 @@ const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, par
 
   useEffect(() => {
     socket.on("random-pick-result", (data) => {
+      setShowRandomNames(false)
+      setShowModal(true)
       setPicked(data.selected);
       setCountdown(3);
       setShowResult(false);
@@ -66,8 +68,8 @@ const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, par
 
   const triggerConfetti = () => {
     confetti({
-      particleCount: 200,
-      spread: 100,
+      particleCount: 400,
+      spread: 200,
       origin: { y: 0.6 },
       zIndex: 9999
     });

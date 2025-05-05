@@ -9,6 +9,7 @@ function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // For user dropdown
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const navigate = useNavigate();
   const handleClick = () => {
     const token = localStorage.getItem('token');
@@ -52,14 +53,24 @@ function Header() {
       </nav>
       <div className="icons">
         <div className="fas fa-bars" id="menu-btn" onClick={handleClick}></div>
-        <div className="fas fa-user" id="login-btn" onClick={toggleDropdown}></div>
+        <div className="fas fa-user" id="login-btn"onClick={() => setShowLoginForm(!showLoginForm)}></div>
         {isDropdownOpen && (
           <div className="dropdown-menu">
             <button className="logout-btn" onClick={handleLogout}>Logout</button>
           </div>
         )}
       </div>
-      
+    {showLoginForm && (
+  <form className={`login-form ${showLoginForm ? 'active' : ''}`}>
+    <h3>Profile</h3>
+    {/* <input type="email" placeholder="your email" className="box" />
+    <input type="password" placeholder="your password" className="box" /> */}
+    <p>forget your password <a href="#">click here</a></p>
+    <p>don't have an account <a href="#">create now</a></p>
+    <button className="btn" onClick={handleLogout}>Logout</button>
+    
+  </form>
+)}
     </header>
     <GlobalModal
         isOpen={modalOpen}

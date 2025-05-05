@@ -91,6 +91,7 @@ exports.getEvents = async (req, res) => {
   exports.joinEventById=async (req, res) => {
 
     try {
+     
       const eventId = req.params.eventId;
       
       const userId = req.user.id; ;

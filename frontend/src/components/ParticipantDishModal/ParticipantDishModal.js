@@ -2,14 +2,15 @@ import React from "react";
 
 const ParticipantDishModal = ({ isOpen, onClose, participant }) => {
   if (!isOpen || !participant) return null;
+  console.log(participant)
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h3>{participant.name}'s Dishes</h3>
+        <h3>{participant.user.userName}'s Dishes</h3>
         <ul>
-          {participant.dishes.map((dish, index) => (
-            <li key={index}>{dish}</li>
+          {participant.selectedDishes.map((selectedDishe,index) => (
+            <li key={index}><strong>{selectedDishe.dish.name}</strong> — Qty: {selectedDishe.quantity}</li>
           ))}
         </ul>
         <button className="close-btn" onClick={onClose}>OK</button>
@@ -33,9 +34,10 @@ const ParticipantDishModal = ({ isOpen, onClose, participant }) => {
           background: white;
           padding: 25px 30px;
           border-radius: 10px;
-          width: 90%;
+          width: 80%;
           max-width: 400px;
           text-align: center;
+          font-size:1.5rem;
           box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 

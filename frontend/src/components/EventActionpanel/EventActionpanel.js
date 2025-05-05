@@ -5,6 +5,7 @@ import GlobalModal from "../GlobalModal/GlobalModal";
 import axios from '../../Services/Api';
 import { getCurrentUser } from '../../utils/getCurrentuser'
 import socket from '../../Services/Socket'
+import GlobalLoading from '../GlobalModal/GlobalLoading';
 //import io from 'socket.io-client';
 
 //const socket = io('http://localhost:5000');
@@ -15,6 +16,7 @@ const EventActionPanel = ({eventId,eventData,participants,setShowRandomNames}) =
   const [hasJoined, setHasJoined] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [loading, setLoading] = useState(false); 
   useEffect(() => {
     const user = getCurrentUser();
     if (user) {
@@ -28,19 +30,21 @@ const EventActionPanel = ({eventId,eventData,participants,setShowRandomNames}) =
   useEffect(() => {
     socket.emit("join-event-room", eventId);
 
-    socket.on("random-pick-started", () => {
-      setShowRandomNames(false)
-      setShowModal(true); // Open modal for all users
-    });
+    // socket.on("random-pick-started", () => {
+    //   setShowRandomNames(false)
+    //   setShowModal(true); // Open modal for all users
+    // });
 
-    return () => {
-      socket.off("random-pick-started");
-    };
+    // return () => {
+    //   socket.off("random-pick-started");
+    // };
   }, [eventId]);
   
 
   const handleJoin = async() => {
     if (!hasJoined) {
+      setLoading(true);
+     
       // Call API or set state
       try {
         const token = localStorage.getItem('token'); // Get the token from localStorage
@@ -50,6 +54,7 @@ const EventActionPanel = ({eventId,eventData,participants,setShowRandomNames}) =
     }
   });
         setHasJoined(true);
+        setLoading(false);
       } catch (error) {
         console.error('Join error:', error);
        // setModal({ isOpen: true, message: error.response?.data?.message || 'Something went wrong' });
@@ -66,6 +71,7 @@ const EventActionPanel = ({eventId,eventData,participants,setShowRandomNames}) =
 
   return (
     <section>
+    {loading && <GlobalLoading />} {/* Loading modal on top */}
     <div className="event-action-panel">
       <button
         className={`btn join-btn ${hasJoined ? "disabled" : ""}`}
@@ -122,6 +128,9 @@ const EventActionPanel = ({eventId,eventData,participants,setShowRandomNames}) =
           background-color: #4caf50;
           color: white;
         }
+          .join-btn:hover {
+  background-color: #45a049; /* A darker green for hover effect */
+}
 
         .join-btn.disabled {
           background-color: #c8e6c9;
@@ -133,6 +142,9 @@ const EventActionPanel = ({eventId,eventData,participants,setShowRandomNames}) =
           background-color: #2196f3;
           color: white;
         }
+          .center-btn:hover {
+  background-color: #1976d2; /* A richer blue for hover */
+}
         .center-btn.disabled {
           background-color: #91c7eb;
           color: #666;

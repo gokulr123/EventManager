@@ -10,6 +10,7 @@ import FinalConfirmModal from '../components/DishCartModal/FinalConfirmationModa
 import DishBottomCartBar from '../components/DishBottomcartBar/DishBottomCartBar';
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
+import GlobalLoading from '../components/GlobalModal/GlobalLoading';
 
 const socket = io(`${process.env.REACT_APP_API_BASE_URL}`); 
 
@@ -26,6 +27,8 @@ const DishSelectionPage = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [dishes, setDishes] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [initialloading, setinitialLoading] = useState(true);
+   const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     if (token) {
@@ -53,9 +56,12 @@ const DishSelectionPage = () => {
         }
 
         const data = await res.json();
+       // await new Promise((resolve) => setTimeout(resolve, 10000));
         setDishes(data);
+        setinitialLoading(false)
       } catch (error) {
         console.error('Failed to fetch dishes:', error.message);
+        setinitialLoading(false)
       }
     };
 
@@ -63,6 +69,7 @@ const DishSelectionPage = () => {
   }, [token]);
   const handleConfirm = async () => {
     try {
+      setLoading(true);
       const selectedDishes = Object.values(cart).map(item => ({
         dish: item._id,
         quantity: item.quantity
@@ -82,13 +89,15 @@ const DishSelectionPage = () => {
       }
   
       const data = await response.json();
-      console.log('Success:', data);
       socket.emit("event-update", { eventId });
+      setLoading(false);
       navigate(`/event/${eventId}`);
+
       // Optionally show toast or success UI here
   
     } catch (error) {
       console.error('Error submitting dishes:', error);
+      setLoading(false);
       // Optionally show error toast or modal
     }
   };
@@ -127,14 +136,22 @@ const DishSelectionPage = () => {
 
   return (
     <>
+     {loading && <GlobalLoading />} {/* Loading modal on top */}
       <Header />
       <div className="dish-page">
         <SearchBar value={searchTerm} onChange={setSearchTerm} />
 
         <div className="dish-list">
-          {filteredDishes.map(dish => (
-            <DishCard key={dish._id} dish={dish} onAdd={() => addToCart(dish)} />
-          ))}
+        {initialloading ? (
+    // Loading skeleton or spinner
+    Array(6).fill(0).map((_, index) => (
+      <div key={index} className="dish-skeleton"></div>
+    ))
+  ) : (
+    filteredDishes.map(dish => (
+      <DishCard key={dish._id} dish={dish} onAdd={() => addToCart(dish)} />
+    ))
+  )}
         </div>
 
         <DishBottomCartBar
@@ -172,6 +189,23 @@ const DishSelectionPage = () => {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
+}
+  .dish-skeleton {
+  width: 320px;
+  height: 180px;
+  background: linear-gradient(-90deg, #e0e0e0 0%, #f8f8f8 50%, #e0e0e0 100%);
+  background-size: 400% 400%;
+  border-radius: 12px;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
     `}</style>
       </div>
