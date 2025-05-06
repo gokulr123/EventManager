@@ -135,6 +135,19 @@ header {
     transition: .4s linear;
 }
 
+.header .login-form .btn {
+    width:40%;
+    margin-top: 1rem;
+    display: inline-block;
+    padding: .8rem 3rem;
+    font-size: 1.7rem;
+    border-radius: .5rem;
+    border: .2rem solid var(--black);
+    color: var(--black);
+    cursor: pointer;
+    background: none;
+}
+
 .header .login-form h3{
     font-size: 2.5rem;
     text-transform: uppercase;

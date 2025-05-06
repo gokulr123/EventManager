@@ -89,14 +89,29 @@ useEffect(() => {
         <img src="/TeaPic.png" alt="Event" className="event-image" />
         <h2 className="event-title">{eventName}</h2>
       </div>
-
-      <p className="selected-names">
+      <div className="tea-duty-container">
+      <div className="tea-duty-row">
+        <div><span className="tea-duty-icon">🔄</span>
+        <strong className="tea-duty-title">Today’s Tea Runners:</strong></div>
+        <div>
+        <span className="tea-duty-names"> {showRandomNames ? selectedPeople.map(p => p.userName).join(", ") : 'Awaiting lucky tea runners...'}</span>
+        </div>
+       
+      </div>
+      <div className="tea-duty-row">
+        <div><span className="tea-duty-icon">🧼</span>
+        <strong className="tea-duty-title">Today’s Cleanup Crew:</strong></div>
+        <div><span className="tea-duty-names">Waiting for the cleanup champions...</span>
+        </div>
+      </div>
+    </div>
+      {/* <p className="selected-names">
       {showRandomNames && (
     <>
       <strong>Selected:</strong> {selectedPeople.map(p => p.userName).join(", ")}
     </>
   )}
-      </p>
+      </p> */}
       
       {/* <div className="dish-summary">
         {Object.entries(dishSummary).map(([dish, count], index) => (
@@ -181,10 +196,6 @@ useEffect(() => {
   max-width: 600px;
   margin: 30px auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .restaurant-summary {
@@ -223,7 +234,57 @@ hr {
   border: none;
   border-top: 1px solid #ddd;
 }
+  .tea-duty-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  max-width: 400px;
+  margin: 5px auto;
+  padding: 4px;
+  border: 2px dashed #ffa94d;
+  border-radius: 12px;
+  background-color: #fef9f2;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
 
+.tea-duty-row {
+  margin-bottom: 1px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tea-duty-icon {
+  font-size: 15px;
+  margin-right: 8px;
+}
+
+.tea-duty-title {
+  font-size: 13px;
+  margin-right: 6px;
+}
+
+.tea-duty-names {
+  font-size: 13px;
+  color: #333;
+}
+.pre-selection-message {
+  padding: 1.5rem;
+  margin: 1rem auto;
+  background-color: #fef9f2;
+  border: 2px dashed #ffa94d;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #d9480f;
+  max-width: 600px;
+  animation: fadeIn 1s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
         @media (max-width: 600px) {
           .event-image {
             width: 60px;

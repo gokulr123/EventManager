@@ -88,12 +88,7 @@ const EventActionPanel = ({eventId,eventData,participants,setShowRandomNames}) =
       <button className="btn dish-btn" onClick={handleDishClick}>🍽️ Choose Dishes</button>
 
       
-        <RandomPickModal setShowRandomNames={setShowRandomNames} participants={participants} setShowModal={setShowModal} eventId={eventId} isOpen={showModal}  socket={socket}
-        onClose={() => {
-          setShowModal(false);
-          socket.emit("reset-random-pick", { eventId });
-          
-        }} />
+        <RandomPickModal setShowRandomNames={setShowRandomNames} participants={participants} setShowModal={setShowModal} eventId={eventId} isOpen={showModal}  socket={socket}/>
       
         <GlobalModal
           isOpen={showGlobalModal}

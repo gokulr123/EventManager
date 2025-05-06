@@ -2,34 +2,38 @@ import React, { useState, useEffect, useRef } from "react";
 import io from 'socket.io-client';
 import axios from "../../Services/Api";
 import confetti from 'canvas-confetti';
+import GlobalLoading from '../GlobalModal/GlobalLoading';
 
 const socket = io('http://localhost:5000');
 
-const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, participants, eventId, onClose }) => {
+const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, participants, eventId }) => {
   const token = localStorage.getItem('token');
   const [numToPick, setNumToPick] = useState(1);
   const [countdown, setCountdown] = useState(-1);
   const [picked, setPicked] = useState([]);
   const [showResult, setShowResult] = useState(false);
+  const [loading, setLoading] = useState(false); 
 
   const canvasRef = useRef();
 
-  useEffect(() => {
-    socket.on("reset-random-pick-ui", () => {
-      setShowRandomNames(true)
-      setShowModal(false);
-      setShowResult(false);
-      setPicked([]);
-      setCountdown(-1);
-    });
+  // useEffect(() => {
+  //   socket.on("reset-random-pick-ui", () => {
+  //     window.scrollTo({ top: 0, behavior: 'smooth' });
+  //     setShowRandomNames(true)
+  //     setShowModal(false);
+  //     setShowResult(false);
+  //     setPicked([]);
+  //     setCountdown(-1);
+  //   });
 
-    return () => {
-      socket.off("reset-random-pick-ui");
-    };
-  }, []);
+  //   return () => {
+  //     socket.off("reset-random-pick-ui");
+  //   };
+  // }, []);
 
   useEffect(() => {
     socket.on("random-pick-result", (data) => {
+      setLoading(false);
       setShowRandomNames(false)
       setShowModal(true)
       setPicked(data.selected);
@@ -52,8 +56,16 @@ const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, par
       socket.off("random-pick-result");
     };
   }, []);
-
+  const onokay=()=>{
+      setShowRandomNames(true)
+      setShowModal(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setShowResult(false);
+      setPicked([]);
+      setCountdown(-1);
+  }
   const handlePick = () => {
+    setLoading(true);
     socket.emit("start-random-pick", { eventId });
     axios.post(`/api/events/select-random`,
       { eventId, count: numToPick },
@@ -78,6 +90,8 @@ const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, par
   if (!isOpen) return null;
 
   return (
+    <>
+    {loading && <GlobalLoading />} {/* Loading modal on top */}
     <div className="modal-backdrop">
       <div className="modal">
         <h3>Random Pick</h3>
@@ -110,7 +124,7 @@ const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, par
                 <li key={idx}>{person.userName}</li>
               ))}
             </ul>
-            <button onClick={onClose}>OK</button>
+            <button onClick={onokay}>OK</button>
           </>
         )}
       </div>
@@ -178,6 +192,7 @@ const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, par
         }
       `}</style>
     </div>
+    </>
   );
 };
 

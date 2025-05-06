@@ -27,7 +27,7 @@ const { Server } = require('socket.io');
 const io = new Server(server, {
   cors: {
     origin: 'https://event-manager-phi-two.vercel.app', // You can also specify your frontend URL here
-   //origin:"*",
+   // origin:"*",
     methods: ['GET', 'POST']
   }
 });

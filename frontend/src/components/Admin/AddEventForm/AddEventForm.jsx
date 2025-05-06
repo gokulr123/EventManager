@@ -23,7 +23,7 @@ const AddEventForm = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('/events/create', formData, {
+      const res = await axios.post('/api/events/create', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

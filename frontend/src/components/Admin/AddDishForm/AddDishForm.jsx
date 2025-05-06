@@ -26,7 +26,7 @@ const AddDishForm = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('/dishes/create', payload, {
+      const res = await axios.post('/api/dishes/create', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
