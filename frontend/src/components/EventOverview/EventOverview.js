@@ -4,9 +4,10 @@ import axios from '../../Services/Api';
 
 const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
 
-const EventOverview = ({eventId, eventName,dishSummary ,showRandomNames}) => {
+const EventOverview = ({eventId, eventName,dishSummary ,showRandomCleanupCrew,showRandomTeaRunners}) => {
   const [restaurantSummary, setRestaurantSummary] = useState({});
-  const [selectedPeople, setSelectedPeople] = useState([]);
+  const [selectedTeaRunners, setSelectedteaRunners] = useState([]);
+  const [selectedCleanupCrew, setSelectedCleanupCrew] = useState([]);
 //   useEffect(() => {
 //     socket.emit("join-event-room", eventId);
 //     // Listen for real-time updates
@@ -50,8 +51,14 @@ useEffect(() => {
 
   // Listen for random pick result
   socket.on("random-pick-result", (data) => {
-   
-    setSelectedPeople(data.selected);
+    if(data.type=='teaRunners')
+    {
+      setSelectedteaRunners(data.selected);
+    }
+    else{
+      setSelectedCleanupCrew(data.selected);
+    }
+    
   });
 
   // Listen for dish summary update
@@ -94,14 +101,14 @@ useEffect(() => {
         <div><span className="tea-duty-icon">🔄</span>
         <strong className="tea-duty-title">Today’s Tea Runners:</strong></div>
         <div>
-        <span className="tea-duty-names"> {showRandomNames ? selectedPeople.map(p => p.userName).join(", ") : 'Awaiting lucky tea runners...'}</span>
+        <span className="tea-duty-names"> {showRandomTeaRunners ? selectedTeaRunners.map(p => p.userName).join(", ") : 'Awaiting lucky tea runners...'}</span>
         </div>
        
       </div>
       <div className="tea-duty-row">
         <div><span className="tea-duty-icon">🧼</span>
         <strong className="tea-duty-title">Today’s Cleanup Crew:</strong></div>
-        <div><span className="tea-duty-names">Waiting for the cleanup champions...</span>
+        <div><span className="tea-duty-names">{showRandomCleanupCrew ? selectedCleanupCrew.map(p => p.userName).join(", ") :'Waiting for the cleanup champions...'}</span>
         </div>
       </div>
     </div>

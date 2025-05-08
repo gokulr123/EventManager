@@ -6,13 +6,15 @@ import GlobalLoading from '../GlobalModal/GlobalLoading';
 
 const socket = io('http://localhost:5000');
 
-const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, participants, eventId }) => {
+const RandomPickModal = ({ setShowRandomTeaRunners,setShowRandomCleanupCrew,isOpen, socket, setShowModal, participants, eventId }) => {
   const token = localStorage.getItem('token');
   const [numToPick, setNumToPick] = useState(1);
   const [countdown, setCountdown] = useState(-1);
   const [picked, setPicked] = useState([]);
+  const [pickedTeaRunners,setPickedTeaRunners] =useState([]);
   const [showResult, setShowResult] = useState(false);
   const [loading, setLoading] = useState(false); 
+  const [selectionType, setSelectionType] = useState('teaRunners');
 
   const canvasRef = useRef();
 
@@ -31,44 +33,102 @@ const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, par
   //   };
   // }, []);
 
-  useEffect(() => {
-    socket.on("random-pick-result", (data) => {
-      setLoading(false);
-      setShowRandomNames(false)
-      setShowModal(true)
-      setPicked(data.selected);
-      setCountdown(3);
-      setShowResult(false);
+  // useEffect(() => {
+  //   socket.on("random-pick-result", (data) => {
+  //     setLoading(false);
+  //     console.log(data)
+  //     if(data.type=="teaRunners")
+  //     {
+  //       setShowRandomTeaRunners(false);
+  //       setPickedTeaRunners(data);
+  //     }
+  //     else{
+  //       setShowRandomCleanupCrew(false);
+  //     } 
+  //     console.log("reached")
 
+  //     setShowModal(true)
+  //     setPicked(data);
+  //     setCountdown(5);
+  //     setShowResult(false);  
+  //     const interval = setInterval(() => {
+  //       setCountdown((prev) => {
+  //         if (prev === 1) {
+  //           clearInterval(interval);
+  //           triggerConfetti(); // Trigger confetti 1 second before result
+  //           setShowResult(true);
+  //         }
+  //         return prev - 1;
+  //       });
+  //     }, 1000);
+    
+  //     if(data.type=="teaRunners")
+  //       {
+  //         setShowRandomTeaRunners(true);
+  //       }
+  //       else{
+  //         setShowRandomCleanupCrew(true);
+  //       }
+  
+  //     return () => {
+  //       socket.off("random-pick-result");
+  //     };
+  //   });
+    
+  // }, []);
+  useEffect(() => {
+    const handleRandomPickResult = (data) => {
+      setLoading(false);
+      if (data.type === "teaRunners") {
+        setShowRandomTeaRunners(false);
+        setPickedTeaRunners(data);
+      } else {
+        setShowRandomCleanupCrew(false);
+      }
+  
+      setShowModal(true);
+      setPicked(data);
+      setCountdown(5);
+      setShowResult(false);
+  
       const interval = setInterval(() => {
         setCountdown((prev) => {
           if (prev === 1) {
             clearInterval(interval);
-            triggerConfetti(); // Trigger confetti 1 second before result
+            triggerConfetti();
             setShowResult(true);
+            if (data.type === "teaRunners") {
+              setShowRandomTeaRunners(true);
+            } else {
+              setShowRandomCleanupCrew(true);
+            }
           }
           return prev - 1;
         });
       }, 1000);
-    });
-
+  
+      
+    };
+  
+    socket.on("random-pick-result", handleRandomPickResult);
+  
     return () => {
-      socket.off("random-pick-result");
+      socket.off("random-pick-result", handleRandomPickResult);
     };
   }, []);
+  
   const onokay=()=>{
-      setShowRandomNames(true)
       setShowModal(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       setShowResult(false);
-      setPicked([]);
+      //setPicked([]);
       setCountdown(-1);
   }
-  const handlePick = () => {
+  const handlePick = async () => {
     setLoading(true);
     socket.emit("start-random-pick", { eventId });
     axios.post(`/api/events/select-random`,
-      { eventId, count: numToPick },
+      { eventId, count: numToPick, selectionType: selectionType },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -91,13 +151,26 @@ const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, par
 
   return (
     <>
-    {loading && <GlobalLoading />} {/* Loading modal on top */}
     <div className="modal-backdrop">
+    {loading && <GlobalLoading />} {/* Loading modal on top */}
       <div className="modal">
         <h3>Random Pick</h3>
 
         {!showResult && countdown < 0 && (
           <>
+          <label className="modal-label">Select Category:</label>
+<select
+  value={selectionType}
+  onChange={(e) => setSelectionType(e.target.value)}
+  className="modal-select"
+>
+  <option value="teaRunners">Tea Runners</option>
+  <option value="cleanupCrew" disabled={pickedTeaRunners.length===0}>
+    Cleanup Crew
+  </option>
+</select>
+
+
             <label>Number of people to pick:</label>
             <input
               type="number"
@@ -120,7 +193,7 @@ const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, par
           <>
             <h4>Selected Participants 🎉:</h4>
             <ul>
-              {picked.map((person, idx) => (
+              {picked.selected.map((person, idx) => (
                 <li key={idx}>{person.userName}</li>
               ))}
             </ul>
@@ -181,6 +254,36 @@ const RandomPickModal = ({ setShowRandomNames ,isOpen, socket, setShowModal, par
         li {
           margin: 5px 0;
         }
+          .modal-label {
+  display: block;
+  margin-bottom: 6px;
+  margin-top:10px;
+  color: #333;
+  font-weight: 600;
+  text-align: left;
+}
+
+.modal-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+}
+
+.modal-select:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.modal-select:disabled {
+  background-color: #e9e9e9;
+  color: #999;
+  cursor: not-allowed;
+}
+
 
         .countdown-text {
           display: flex;

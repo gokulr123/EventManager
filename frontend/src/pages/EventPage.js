@@ -69,7 +69,8 @@ const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
 const EventPage = () => {
   const { eventId } = useParams(); // Get eventId from the URL
   const [eventData, setEventData] = useState(null);
-  const [showRandomNames, setShowRandomNames] = useState(false);
+  const [showRandomTeaRunners, setShowRandomTeaRunners] = useState(false);
+  const [showRandomCleanupCrew, setShowRandomCleanupCrew] = useState(false);
   const [loading, setLoading] = useState(false); // start as true
 
   const fetchEvent = async () => {
@@ -86,7 +87,8 @@ const EventPage = () => {
 
   useEffect(() => {
     socket.emit("join-event-room", eventId);
-    setShowRandomNames(false);
+    setShowRandomTeaRunners(false);
+    setShowRandomCleanupCrew(false)
     fetchEvent();
   }, [eventId]);
 
@@ -114,7 +116,8 @@ const EventPage = () => {
         selectedPeople={eventData?.randomTeaServants}
         dishSummary={eventData?.dishSummary}
         eventId={eventId}
-        showRandomNames={showRandomNames}
+        showRandomTeaRunners={showRandomTeaRunners}
+        showRandomCleanupCrew={showRandomCleanupCrew}
       />
   
       <Eventparticipants
@@ -123,7 +126,8 @@ const EventPage = () => {
       />
   
       <EventActionPanel
-        setShowRandomNames={setShowRandomNames}
+        setShowRandomTeaRunners={setShowRandomTeaRunners}
+        setShowRandomCleanupCrew={setShowRandomCleanupCrew}
         eventId={eventId}
         eventData={eventData}
         participants={eventData?.participants || []}

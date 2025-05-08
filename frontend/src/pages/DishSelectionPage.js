@@ -74,7 +74,6 @@ const DishSelectionPage = () => {
         dish: item._id,
         quantity: item.quantity
       }));
-      console.log("selecteddishes",selectedDishes)
       const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/events/${eventId}/participants/dishes`, {
         method: 'POST',
         headers: {
@@ -102,7 +101,6 @@ const DishSelectionPage = () => {
     }
   };
   const addToCart = (dish) => {
-    console.log("cart",cart)
     setCart(prev => ({
       ...prev,
       [dish._id]: {

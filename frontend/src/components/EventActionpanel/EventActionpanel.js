@@ -10,7 +10,7 @@ import GlobalLoading from '../GlobalModal/GlobalLoading';
 
 //const socket = io('http://localhost:5000');
 
-const EventActionPanel = ({eventId,eventData,participants,setShowRandomNames}) => {
+const EventActionPanel = ({eventId,eventData,participants, setShowRandomCleanupCrew,setShowRandomTeaRunners}) => {
   const navigate = useNavigate();
   const [showGlobalModal, setShowGlobalModal] = useState(false);
   const [hasJoined, setHasJoined] = useState(false);
@@ -88,7 +88,7 @@ const EventActionPanel = ({eventId,eventData,participants,setShowRandomNames}) =
       <button className="btn dish-btn" onClick={handleDishClick}>🍽️ Choose Dishes</button>
 
       
-        <RandomPickModal setShowRandomNames={setShowRandomNames} participants={participants} setShowModal={setShowModal} eventId={eventId} isOpen={showModal}  socket={socket}/>
+        <RandomPickModal setShowRandomCleanupCrew={setShowRandomCleanupCrew} setShowRandomTeaRunners={setShowRandomTeaRunners}  participants={participants} setShowModal={setShowModal} eventId={eventId} isOpen={showModal}  socket={socket}/>
       
         <GlobalModal
           isOpen={showGlobalModal}

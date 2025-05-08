@@ -177,7 +177,7 @@ import GlobalLoading from './GlobalModal/GlobalLoading';
     required
     className="styled-select"
   >
-  <option value="" disabled className="placeholder-option">
+  <option value="" disabled className="placeholder-option" required>
     Select Gender
   </option>
     <option value="Male">Male</option>

@@ -173,59 +173,80 @@ exports.getEvents = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+
+ 
+  
   exports.selectRandomParticipants = async (req, res) => {
     try {
       const io = req.app.get('io');
-      const { eventId, count } = req.body; 
-      // count = number of people to select
+      const { eventId, count, selectionType } = req.body; // Now includes selectionType
   
       const event = await Event.findById(eventId);
       if (!event) return res.status(404).json({ message: 'Event not found' });
   
-      const allUserIds = event.participants.map(p => p.user.toString());
+      let allUserIds = event.participants.map(p => p.user.toString());
+  
+      if (selectionType === 'cleanupCrew') {
+        // Remove users already selected as tea runners
+        const teaRunnerIds = event.randomTeaServants.map(r => r.user.toString());
+        allUserIds = allUserIds.filter(id => !teaRunnerIds.includes(id));
+      }
   
       if (count > allUserIds.length) {
-        return res.status(400).json({ message: 'Requested number exceeds total participants' });
+        return res.status(400).json({ message: 'Requested number exceeds available participants' });
+      }
+      function fisherYatesShuffle(array) {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
       }
   
       // Shuffle and select
-      const shuffled = allUserIds.sort(() => 0.5 - Math.random());
+      const shuffled = fisherYatesShuffle(allUserIds);
       const selectedUserIds = shuffled.slice(0, count);
   
-      // Get usernames
       const users = await User.find({ _id: { $in: selectedUserIds } }, '_id userName');
-      
-      // Ensure return order matches selectedUserIds
       const sortedUsers = selectedUserIds.map(id => users.find(u => u._id.toString() === id));
-      console.log(sortedUsers)
-      console.log("reached")
-
-       // Remove previous participants from the randomTeaServants array
-    event.randomTeaServants = [];
-
-    // Add the new selected participants to the randomTeaServants array
-    sortedUsers.forEach(user => {
-      event.randomTeaServants.push({
-        user: user._id,  // Store the ObjectId of the user
-        userName: user.userName  // Store the userName
-      });
-    });
-    // Save the updated event document with the new randomTeaServants array
-    await event.save();
-
+  
+      if (selectionType === 'teaRunners') {
+        // Clear old tea runners
+        event.randomTeaServants = [];
+  
+        // Store new tea runners
+        sortedUsers.forEach(user => {
+          event.randomTeaServants.push({
+            user: user._id,
+            userName: user.userName
+          });
+        });
+      } else if (selectionType === 'cleanupCrew') {
+        //clear old  cleanup crew
+        event.randomCleaners = [];
+        // Store cleanup crew separately (optional enhancement)
+        event.randomCleaners = sortedUsers.map(user => ({
+          user: user._id,
+          userName: user.userName
+        }));
+      }
+  
+      await event.save();
+  
       if (io) {
-        // Emit to the event room where participants are connected
         io.to(eventId).emit('random-pick-result', {
+          type: selectionType,
           selected: sortedUsers
         });
       } else {
         console.error('WebSocket server is not initialized');
       }
-      res.status(200).json({ selected: sortedUsers });
+  
+      res.status(200).json({  type: selectionType, selected: sortedUsers });
     } catch (error) {
       console.error("Random select error:", error);
       res.status(500).json({ message: "Server error" });
     }
   };
-  
   
