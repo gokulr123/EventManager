@@ -50,6 +50,8 @@ import GlobalLoading from './GlobalModal/GlobalLoading';
     };
     const handleRegister = async (e) => {
         e.preventDefault();
+        setLoading(true); 
+        //await new Promise((resolve) => setTimeout(resolve, 10000));
         try {
           const res = await axios.post('/api/auth/register', {
             ustId,
@@ -64,6 +66,9 @@ import GlobalLoading from './GlobalModal/GlobalLoading';
           setIsSignUp(false); // switch to login after successful registration
         } catch (err) {
           setMessage(err.response?.data?.message || "Registration failed");
+        }
+        finally {
+          setLoading(false); // Hide loader after success or failure
         }
       };
 
@@ -119,6 +124,7 @@ import GlobalLoading from './GlobalModal/GlobalLoading';
           ) : (
             <form className="sign-up-form"  onSubmit={handleRegister}>
               <h2 className="title">Sign up</h2>
+              {message && <p style={{ color: 'red' }}>{message}</p>}
               <div className="input-fields">
                 <i className="fas fa-user"></i>
                 <input

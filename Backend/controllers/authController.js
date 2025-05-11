@@ -6,6 +6,19 @@ exports.register = async (req, res) => {
   try {
     const { ustId,userName, password, confirmPassword, gender, gmail, dateOfBirth } = req.body;
     if (password !== confirmPassword) return res.status(400).json({ message: "Passwords do not match" });
+      // Age validation: must be 18 or older
+      const dob = new Date(dateOfBirth);
+      const today = new Date();
+  
+      const age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      const dayDiff = today.getDate() - dob.getDate();
+  
+      const isUnder18 = age < 18 || (age === 18 && (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)));
+  
+      if (isUnder18) {
+        return res.status(400).json({ message: "You must be at least 18 years old to register" });
+      }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ ustId,userName, password: hashedPassword, gender, gmail, dateOfBirth });

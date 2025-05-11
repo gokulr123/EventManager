@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import axios from '../../../Services/Api'; // Ensure this points to your custom axios instance
 
 const AddDishForm = () => {
+  const [restaurants, setRestaurants] = useState([]);
+
   const [dishData, setDishData] = useState({
     dishName: '',
     restaurantName: '',
     price: '',
     category: 'Food',
   });
-
+  useEffect(() => {
+    setRestaurants([
+      { _id: '1', name: 'Saravana bhavan' },
+      { _id: '2', name: 'Kaffeehaus' },
+      { _id: '3', name: 'mamta food' },
+      { _id: '4', name: 'supreme bakers' },
+      { _id: '5', name: 'southern delight' },
+      { _id: '5', name: 'plav' },
+      { _id: '5', name: 'cococane juicery' },
+      { _id: '5', name: 'malabar quissa' },
+    ]);
+  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setDishData((prev) => ({ ...prev, [name]: value }));
@@ -104,17 +117,20 @@ const AddDishForm = () => {
         />
       </div>
 
-      <div style={styles.formGroup}>
-        <label style={styles.label}>Restaurant Name</label>
-        <input
-          style={styles.input}
-          type="text"
-          name="restaurantName"
-          value={dishData.restaurantName}
-          onChange={handleChange}
-          required
-        />
-      </div>
+      <select
+  style={styles.select}
+  name="restaurantName"
+  value={dishData.restaurantName}
+  onChange={handleChange}
+  required
+>
+  <option value="">-- Select a Restaurant --</option>
+  {restaurants.map((r) => (
+    <option key={r._id} value={r.name}>
+      {r.name}
+    </option>
+  ))}
+</select>
 
       <div style={styles.formGroup}>
         <label style={styles.label}>Price</label>
