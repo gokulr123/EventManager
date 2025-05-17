@@ -45,14 +45,29 @@ const EventOverview = ({eventId, eventName,dishSummary ,showRandomCleanupCrew,sh
 //       socket.off("dish-summary-update");
 //     };
 //   }, [eventId]);
-
 useEffect(() => {
+  const fetchTeaHelpers = async () => {
+    try {
+      const res = await axios.get(`/api/events/${eventId}/tea-helpers`);
+         setSelectedteaRunners(res.data.randomTeaServants);
+         setSelectedCleanupCrew(res.data.randomCleaners);
+         console.log(res.data.randomTeaServants)
+    } catch (err) {
+      console.error('Failed to fetch tea helpers:', err);
+    }
+  };
+
+  fetchTeaHelpers();
+}, [eventId]);
+useEffect(() => {
+
   socket.emit("join-event-room", eventId); // ✅ Join only once per eventId
 
   // Listen for random pick result
   socket.on("random-pick-result", (data) => {
     if(data.type=='teaRunners')
     {
+      console.log(data.selected)
       setSelectedteaRunners(data.selected);
     }
     else{
@@ -101,14 +116,15 @@ useEffect(() => {
         <div><span className="tea-duty-icon">🔄</span>
         <strong className="tea-duty-title">Today’s Tea Runners:</strong></div>
         <div>
-        <span className="tea-duty-names"> {showRandomTeaRunners ? selectedTeaRunners.map(p => p.userName).join(", ") : 'Awaiting lucky tea runners...'}</span>
+        <span className="tea-duty-names"> {showRandomTeaRunners || selectedTeaRunners.length > 0
+? selectedTeaRunners.map(p => p.userName).join(", ") : 'Awaiting lucky tea runners...'}</span>
         </div>
        
       </div>
       <div className="tea-duty-row">
         <div><span className="tea-duty-icon">🧼</span>
         <strong className="tea-duty-title">Today’s Cleanup Crew:</strong></div>
-        <div><span className="tea-duty-names">{showRandomCleanupCrew ? selectedCleanupCrew.map(p => p.userName).join(", ") :'Waiting for the cleanup champions...'}</span>
+        <div><span className="tea-duty-names">{showRandomCleanupCrew || selectedCleanupCrew.length>0? selectedCleanupCrew.map(p => p.userName).join(", ") :'Waiting for the cleanup champions...'}</span>
         </div>
       </div>
     </div>

@@ -26,6 +26,7 @@ const eventSchema = new mongoose.Schema({
   time: { type: Date, required: true },
   venue: { type: String, required: true },
   numberOfParticipants: { type: Number, required: true },
+  isEventCompleted:{type:Boolean,default:false},
 
   // Updated participants structure
   participants: [

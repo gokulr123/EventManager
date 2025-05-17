@@ -62,7 +62,7 @@ exports.joinEvent = async (req, res) => {
 };
 exports.getEvents = async (req, res) => {
     try {
-      const events = await Event.find(); // You can also add `.populate('participants')` if needed
+      const events = await Event.find({ isEventCompleted: false }); // You can also add `.populate('participants')` if needed
       res.status(200).json(events);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -249,4 +249,21 @@ exports.getEvents = async (req, res) => {
       res.status(500).json({ message: "Server error" });
     }
   };
+
+  exports.teaHelpers = async (req, res) => {
+     try {
+    const { eventId } = req.params;
+    const event = await Event.findById(eventId);
+
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+
+    res.json({
+      randomTeaServants: event.randomTeaServants,
+      randomCleaners: event.randomCleaners
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching tea helpers', error });
+  }
+
+  }
   
