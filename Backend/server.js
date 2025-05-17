@@ -12,7 +12,7 @@ app.use(cors({
   origin: 'https://event-manager-phi-two.vercel.app', // ✅ your deployed frontend URL
   credentials: true
 }));
-//app.use(cors());
+// app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);

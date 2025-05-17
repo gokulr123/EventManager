@@ -17,8 +17,11 @@ const EventActionPanel = ({eventId,eventData,participants, setShowRandomCleanupC
   const [showModal, setShowModal] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [loading, setLoading] = useState(false); 
+  const [admin,setAdmin] =useState(null);
   useEffect(() => {
     const user = getCurrentUser();
+    setAdmin(user)
+    console.log(user)
     if (user) {
       setCurrentUserId(user.id);
       const isParticipant = eventData?.participants?.some(
@@ -81,9 +84,13 @@ const EventActionPanel = ({eventId,eventData,participants, setShowRandomCleanupC
         {hasJoined ? "Joined" : "Join"}
       </button>
 
-      <button  className={`btn center-btn ${!hasJoined ? "disabled" : ""}`} disabled={!hasJoined} onClick={() => {setShowModal(true);}}>
-        🎲 Random Pick
-      </button>
+      <button
+  className={`btn center-btn ${admin?.isAdmin? "" : "disabled"}`}
+  disabled={!admin?.isAdmin}
+  onClick={() => setShowModal(true)}
+>
+  🎲 Random Pick
+</button>
 
       <button className="btn dish-btn" onClick={handleDishClick}>🍽️ Choose Dishes</button>
 

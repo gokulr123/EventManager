@@ -60,14 +60,15 @@ function LiveEvent() {
       setModal({ isOpen: true, message: "You have already joined this event!" });
       return;
     }
-    try {
-      await axios.post(`/api/events/${eventId}/join`);
-      socket.emit('join-event-room', eventId);
-      navigate(`/event/${eventId}`)
-    } catch (error) {
-      console.error('Join error:', error);
-      setModal({ isOpen: true, message: error.response?.data?.message || 'Something went wrong' });
-    }
+     navigate(`/event/${eventId}`);
+    // try {
+    //   await axios.post(`/api/events/${eventId}/join`);
+    //   socket.emit('join-event-room', eventId);
+    //   navigate(`/event/${eventId}`)
+    // } catch (error) {
+    //   console.error('Join error:', error);
+    //   setModal({ isOpen: true, message: error.response?.data?.message || 'Something went wrong' });
+    // }
     
   };
   const closeModal = () => setModal({ isOpen: false, message: "" });
